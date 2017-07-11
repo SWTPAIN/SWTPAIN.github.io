@@ -1,0 +1,16 @@
+---
+title: KaFai Choi
+---
+$partial("templates/post-list.html")$
+
+<script>
+  window.onload = function() {
+    const aboutLink = document.getElementById('about-link')
+    const headerContent = document.getElementById('headerContent')
+    const aboutContent = document.getElementById('aboutme')
+    aboutLink.onclick = function() {
+      aboutContent.classList.toggle('show')
+      headerContent.classList.toggle('up')
+    };
+  }
+</script>
