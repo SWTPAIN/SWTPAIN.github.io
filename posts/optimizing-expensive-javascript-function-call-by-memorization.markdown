@@ -98,4 +98,4 @@ const memoizedFibonacci = memoized(10)( n =>
 );
 ```
 
-One of the use case in web application will be like some complex form validation. Please note that the above function heavily using closure in javascript. If you are not familiar with closure, you might want to have a look at the post I previously written [here](2015-08-14-understanding-javascript-closure.html).
+One of the use case in web application will be like some complex form validation. Please note that the above function heavily using closure in javascript. If you are not familiar with closure, you might want to have a look at the post I previously written [here](understanding-javascript-closure.html).
