@@ -62,14 +62,14 @@ pre {
   border-radius: 1px;
   border: 0px;
   word-wrap: normal;
-  background-color: #2C3338;
+  background-color: #f6f8fa;
 }
 
 code {
   border-radius: 1px;
-  color: #FF8976;
+  /*color: #FF8976;*/
   padding: 0px;
-  background-color: #2C3338;
+  background-color: #f6f8fa;
 }
 
 p > code {
