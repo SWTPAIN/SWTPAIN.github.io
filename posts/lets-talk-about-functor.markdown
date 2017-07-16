@@ -4,7 +4,7 @@ date: 2017-07-16
 preview_image: /images/pipe.jpeg
 ---
 
-These articles is targeted for any Javascript developer to have a brief understanding in functor.
+This article is targeted for any Javascript developer to get a brief understanding in functor.
 
 ## What is a functor?
 A Functor is a way to apply a function over some structure that we don't want to alter.
@@ -42,10 +42,9 @@ The implication is if we didn't change the outer structure and f is identity. Th
 ```haskell
 fmap (f . g) == fmap f . fmap g
 ```
-The implication is fmap is composable which mean composing two functions and then mapping the resulting function over a functor is the same as first mapping one function over the functor and then mapping the other one.
+The implication is thatfmap is composable which means composing two functions and then mapping the resulting function over a functor is the same as first mapping one function over the functor and then mapping the other one.
 
 In language that's strictly evaluated, it brings us advantage by avoiding loop over the data structure twice.
-
 
 ## Example
 ### Maybe
@@ -70,7 +69,7 @@ if (user.name !== null || user.name !== undefined) {
 }
 ```
 
-So the `Maybe` type allow us to model and handle cases of non-existing values explicitely because by lifting it to type level, the compiler or type-checker will require us to handle two possible case and error in runtime can be avoided.
+So the `Maybe` type allows us to model and handle cases of non-existing values explicitely because by lifting it to type level, the compiler or type-checker will require us to handle two possible case and error in runtime can be avoided.
 
 A naive implementation of writing Maybe functor in JS is as follow
 ```javascript
