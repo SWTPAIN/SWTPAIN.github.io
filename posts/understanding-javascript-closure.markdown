@@ -1,7 +1,8 @@
 ---
 title: Understanding Javascript Closure
 date: 2015-08-14
-preview_image: /images/traffic-road.jpg
+preview_image: /images/traffic-road.jpeg
+isIndex: False
 ---
 
 Before talking about closures in Javascript, it is essential to understand Execution Context, Lexical Scope and Variables Environment first.

@@ -1,7 +1,8 @@
 ---
 title: Optimizing Expensive Javascript Function Application by Memorization
 date: 2016-03-02
-preview_image: /images/piano.jpg
+preview_image: /images/piano.jpeg
+isIndex: False
 ---
 There will be some occasion that you have some function that takes long processing time. And if the function is pure (no side-effect), we can use a simple technique called memoization to speed it up. The rational is basically creating a cache lookup table mapping arguments to result in order to avoid repeating the calculation of results for previously processed inputs.
 
