@@ -2,7 +2,9 @@
 {-# LANGUAGE OverloadedStrings #-}
 import           Data.Monoid (mappend)
 import           Hakyll
-
+import           Text.Pandoc (WriterOptions (..), HTMLMathMethod (MathJax))
+import           Text.Pandoc.Options
+import qualified Data.Set as S
 
 --------------------------------------------------------------------------------
 main :: IO ()
@@ -17,7 +19,7 @@ main = hakyll $ do
 
     match "posts/*" $ do
         route $ setExtension "html"
-        compile $ pandocCompiler
+        compile $ pandocCompilerWith defaultHakyllReaderOptions pandocOptions
             >>= loadAndApplyTemplate "templates/post.html"    postCtx
             >>= loadAndApplyTemplate "templates/default.html" postCtx
             >>= relativizeUrls
@@ -59,3 +61,18 @@ postCtx :: Context String
 postCtx =
     dateField "date" "%B %e, %Y" `mappend`
     defaultContext
+
+
+-- Options and Configurations
+pandocOptions :: WriterOptions
+pandocOptions =
+  let
+    mathExtensions = [Ext_tex_math_dollars, Ext_tex_math_double_backslash, Ext_latex_macros]
+    defaultExtensions = writerExtensions defaultHakyllWriterOptions
+    newExtensions = foldr S.insert defaultExtensions mathExtensions
+  in
+    defaultHakyllWriterOptions
+      { writerHTMLMathMethod = MathJax "https://cdn.rawgit.com/mathjax/MathJax/2.7.1/MathJax.js"
+      , writerExtensions = newExtensions
+      , writerHtml5          = True
+      }
