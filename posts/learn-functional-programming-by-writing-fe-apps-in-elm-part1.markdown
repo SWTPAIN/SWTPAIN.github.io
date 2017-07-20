@@ -21,8 +21,6 @@ So this trigger to me to go deeper into learning FP. And Elm is my first choice 
 ### What's Elm?
 Elm is a pure functional programming language that compile to JS and CSS. Elm is very friendly for functional programming beginner and its more like a framework with a language attached.
 
-$$ \[ \Phi(x) = \frac{1}{\sqrt{2 \pi}} \int_{-\infty}^x e^{-\xi^2/2}\; d\xi \] $$
-
 ### What are we going to build
 We will build a quiz-maker single page application where anyone can create quiz and allow people to do the quiz.
 
