@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta property="og:site_name" content="KaFai Choi">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Optimizing Expensive Javascript Function Application by Memorization">
+    <meta property="og:image" content>
+    <meta property="og:url" content="https://swtpain.github.io/posts/optimizing-expensive-javascript-function-call-by-memorization.html">
+    <meta property="og:description" content="Optimizing Expensive Javascript Function Application by Memorization">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="KaFai Choi">
+    <meta name="description" content="Optimizing Expensive Javascript Function Application by Memorization">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="../css/default.css">
+    <link rel="stylesheet" type="text/css" href="../css/pandoc.css">
+    <link rel="alternate" type="application/rss+xml" href="../rss.xml" title="RSS">
+    <script>try{Typekit.load({ async: true });}catch(e){}</script>
+    <script type="text/javascript" src="https://cdn.rawgit.com/mathjax/MathJax/2.7.1/MathJax.js"></script>
+    <title>Optimizing Expensive Javascript Function Application by Memorization</title>
+  </head>
+  <body>
+    <header class="header">
+      <div id="headerContent" class="header__content">
+        <span class="header__title">
+          <a href="../">Y = λf.(λx.f(xx))(λx.f(xx))</a>
+        </span>
+        <div class="header__links">
+          <a id="about-link" class="header__link" title="About">
+            <div>
+              <i class="fa fa-user nav-icon"></i>
+            </div>
+          </a>
+          <a target="_blank" class="header__link" href="https://github.com/swtpain" title="Linkedin">
+            <div>
+              <i class="fa fa-github nav-icon"></i>
+            </div>
+          </a>
+          <a target="_blank" class="header__link" href="https://www.linkedin.com/in/kafaic/" title="Github">
+            <div>
+              <i class="fa fa-linkedin nav-icon"></i>
+            </div>
+          </a>
+          <a target="_blank" class="header__link" href="https://www.facebook.com/meatfree.muscle.hk/" title="Facebook">
+            <div>
+              <i class="fa fa-facebook nav-icon"></i>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="header__aboutme" id="aboutme">
+        <div class="header_aboutme-detail">
+          <p>
+            I am a software engineer, a fearless traveller and a passionate vegan weightlifter.
+          </p>
+          <p>
+            I had been working in difference startup from software consultant to startup and big online media. I had done Ruby on Rails, Phoenix(Elixir), Scala, NodeJS, AngularJS, ReactJS, ReactNative and Elm in these 3 years.
+          </p>
+          <p>
+            I now focus on learning function programming, distributed system, deep learning and blockchain technology.
+          </p>
+          <p>
+            This blog will be my personal notes mainly about technical things and hopefully someone can find them useful.
+          </p>
+        </div>
+      </div>
+    </header>
+    <article>
+  <div class="article__info">
+    <p class="article__title">
+       Optimizing Expensive Javascript Function Application by Memorization
+    </p>
+    <time class="article__date">March  2, 2016</time>
+  </div>
+  <div class="article__content">
+    <p>There will be some occasion that you have some function that takes long processing time. And if the function is pure (no side-effect), we can use a simple technique called memoization to speed it up. The rational is basically creating a cache lookup table mapping arguments to result in order to avoid repeating the calculation of results for previously processed inputs.</p>
+<p>Consider a naive implementation of fibonacci function.</p>
+<div class="sourceCode"><pre class="sourceCode js"><code class="sourceCode javascript"><span class="kw">const</span> fibonacci <span class="op">=</span> n <span class="op">=&gt;</span>
+  n <span class="op">&lt;</span> <span class="dv">2</span>
+    <span class="op">?</span> n
+    : <span class="at">fibonacci</span>(n<span class="op">-</span><span class="dv">2</span>) <span class="op">+</span> <span class="at">fibonacci</span>(n<span class="op">-</span><span class="dv">1</span>)<span class="op">;</span></code></pre></div>
+<p>It will takes so long because of repeated calculation.</p>
+<p>One simple memoized function is as follow.</p>
+<div class="sourceCode"><pre class="sourceCode js"><code class="sourceCode javascript"><span class="kw">const</span> memoized <span class="op">=</span> fn <span class="op">=&gt;</span> <span class="op">{</span>  
+  <span class="kw">const</span> lookupTable <span class="op">=</span> <span class="op">{};</span>
+
+  <span class="cf">return</span> <span class="kw">function</span>(...<span class="at">args</span>) <span class="op">{</span>
+    <span class="kw">const</span> key <span class="op">=</span> <span class="va">JSON</span>.<span class="at">stringify</span>(<span class="kw">this</span><span class="op">,</span> args)<span class="op">;</span>
+
+    <span class="cf">return</span> lookupTable[key] <span class="op">||</span> (lookupTable[key] <span class="op">=</span> <span class="va">fn</span>.<span class="at">apply</span>(<span class="kw">this</span><span class="op">,</span> args))<span class="op">;</span>
+  <span class="op">}</span>
+<span class="op">}</span>
+<span class="kw">const</span> memoizedFibonacci <span class="op">=</span> <span class="at">memoized</span>( n <span class="op">=&gt;</span>  
+  n <span class="op">&lt;</span> <span class="dv">2</span>
+    <span class="op">?</span> n
+    : <span class="at">memoizedFibonacci</span>(n<span class="op">-</span><span class="dv">2</span>) <span class="op">+</span> <span class="at">memoizedFibonacci</span>(n<span class="op">-</span><span class="dv">1</span>)
+)<span class="op">;</span>
+<span class="co">// Benchmarking</span>
+(()<span class="op">=&gt;</span> <span class="op">{</span>
+  <span class="va">console</span>.<span class="at">time</span>(<span class="st">'before'</span>)<span class="op">;</span>
+  <span class="at">fibonacci</span>(<span class="dv">40</span>)<span class="op">;</span>
+  <span class="va">console</span>.<span class="at">timeEnd</span>(<span class="st">'before'</span>)<span class="op">;</span>
+<span class="op">}</span>)()<span class="op">;</span> <span class="co">// before: 63612.916ms</span>
+(()<span class="op">=&gt;</span> <span class="op">{</span>
+  <span class="va">console</span>.<span class="at">time</span>(<span class="st">'after'</span>)<span class="op">;</span>
+  <span class="at">memoizedFibonacci</span>(<span class="dv">40</span>)<span class="op">;</span>
+  <span class="va">console</span>.<span class="at">timeEnd</span>(<span class="st">'after'</span>)<span class="op">;</span>
+<span class="op">}</span>)() <span class="co">// after: 0.474ms</span></code></pre></div>
+<p>As you can see it takes much less time to obtain the result. By building a cache lookup table, we trade space for time and make our function.</p>
+<p>Sometimes, we will want to set a limit on your cache size to prevent occupying too much memory. A naive implementation is as follow</p>
+<div class="sourceCode"><pre class="sourceCode js"><code class="sourceCode javascript"><span class="kw">const</span> createCache <span class="op">=</span> limit <span class="op">=&gt;</span> <span class="op">{</span>  
+  <span class="kw">const</span> entries <span class="op">=</span> []<span class="op">;</span>
+
+  <span class="kw">function</span> <span class="at">get</span>(key) <span class="op">{</span>
+    <span class="cf">for</span> (<span class="kw">let</span> index <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> index <span class="op">&lt;</span> <span class="va">entries</span>.<span class="at">length</span><span class="op">;</span> index<span class="op">++</span>) <span class="op">{</span>
+      <span class="kw">const</span> entry <span class="op">=</span> entries[index]<span class="op">;</span>
+      <span class="cf">if</span> (key <span class="op">===</span> <span class="va">entry</span>.<span class="at">key</span>) <span class="op">{</span>
+        <span class="cf">if</span> (index <span class="op">&gt;</span> <span class="dv">0</span>) <span class="op">{</span>
+          <span class="va">entries</span>.<span class="at">splice</span>(index<span class="op">,</span> <span class="dv">1</span>)<span class="op">;</span>
+          <span class="va">entries</span>.<span class="at">unshift</span>(entry)<span class="op">;</span>
+        <span class="op">}</span>
+        <span class="cf">return</span> <span class="va">entry</span>.<span class="at">value</span><span class="op">;</span>
+      <span class="op">}</span>
+    <span class="op">}</span>
+  <span class="op">}</span>
+
+  <span class="kw">function</span> <span class="at">put</span>(key<span class="op">,</span> value) <span class="op">{</span>
+    <span class="cf">if</span> (<span class="op">!</span><span class="at">get</span>(key)) <span class="op">{</span>
+      <span class="va">entries</span>.<span class="at">unshift</span>(<span class="op">{</span>key<span class="op">,</span> value<span class="op">}</span>)<span class="op">;</span>
+      <span class="cf">if</span> (<span class="va">entries</span>.<span class="at">length</span> <span class="op">&gt;</span> limit) <span class="op">{</span>
+        <span class="va">entries</span>.<span class="at">pop</span>()<span class="op">;</span>
+      <span class="op">}</span>
+    <span class="op">}</span>
+  <span class="op">}</span>
+
+  <span class="cf">return</span> <span class="op">{</span>get<span class="op">,</span> put<span class="op">};</span>
+<span class="op">}</span>
+
+<span class="kw">const</span> memoized <span class="op">=</span> limit <span class="op">=&gt;</span> fn <span class="op">=&gt;</span> <span class="op">{</span>  
+  <span class="kw">const</span> cache <span class="op">=</span> <span class="at">createCache</span>(limit)<span class="op">;</span>
+
+  <span class="cf">return</span> <span class="kw">function</span>(...<span class="at">args</span>) <span class="op">{</span>
+    <span class="kw">const</span> key <span class="op">=</span> <span class="va">JSON</span>.<span class="at">stringify</span>(<span class="kw">this</span><span class="op">,</span> args)<span class="op">;</span>
+    <span class="kw">let</span> value <span class="op">=</span> <span class="va">cache</span>.<span class="at">get</span>(key)<span class="op">;</span>
+    <span class="cf">if</span> (<span class="op">!</span>value) <span class="op">{</span>
+      value <span class="op">=</span> <span class="va">fn</span>.<span class="at">apply</span>(<span class="kw">this</span><span class="op">,</span> args)
+    <span class="op">}</span>
+    <span class="va">cache</span>.<span class="at">put</span>(key<span class="op">,</span> value)<span class="op">;</span>
+    <span class="cf">return</span> value<span class="op">;</span>
+  <span class="op">}</span>
+<span class="op">}</span>
+
+<span class="co">// memoized result of latest 10 arguments</span>
+<span class="kw">const</span> memoizedFibonacci <span class="op">=</span> <span class="at">memoized</span>(<span class="dv">10</span>)( n <span class="op">=&gt;</span>  
+  n <span class="op">&lt;</span> <span class="dv">2</span>
+    <span class="op">?</span> n
+    : <span class="at">memoizedFibonacci</span>(n<span class="op">-</span><span class="dv">2</span>) <span class="op">+</span> <span class="at">memoizedFibonacci</span>(n<span class="op">-</span><span class="dv">1</span>)
+)<span class="op">;</span></code></pre></div>
+<p>One of the use case in web application will be like some complex form validation. Please note that the above function heavily using closure in javascript. If you are not familiar with closure, you might want to have a look at the post I previously written <a href="understanding-javascript-closure.html">here</a>.</p>
+  </div>
+</article>
+
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta property="og:site_name" content="KaFai Choi">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Understanding Javascript Closure">
+    <meta property="og:image" content>
+    <meta property="og:url" content="https://swtpain.github.io/posts/understanding-javascript-closure.html">
+    <meta property="og:description" content="Understanding Javascript Closure">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="KaFai Choi">
+    <meta name="description" content="Understanding Javascript Closure">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="../css/default.css">
+    <link rel="stylesheet" type="text/css" href="../css/pandoc.css">
+    <link rel="alternate" type="application/rss+xml" href="../rss.xml" title="RSS">
+    <script>try{Typekit.load({ async: true });}catch(e){}</script>
+    <script type="text/javascript" src="https://cdn.rawgit.com/mathjax/MathJax/2.7.1/MathJax.js"></script>
+    <title>Understanding Javascript Closure</title>
+  </head>
+  <body>
+    <header class="header">
+      <div id="headerContent" class="header__content">
+        <span class="header__title">
+          <a href="../">Y = λf.(λx.f(xx))(λx.f(xx))</a>
+        </span>
+        <div class="header__links">
+          <a id="about-link" class="header__link" title="About">
+            <div>
+              <i class="fa fa-user nav-icon"></i>
+            </div>
+          </a>
+          <a target="_blank" class="header__link" href="https://github.com/swtpain" title="Linkedin">
+            <div>
+              <i class="fa fa-github nav-icon"></i>
+            </div>
+          </a>
+          <a target="_blank" class="header__link" href="https://www.linkedin.com/in/kafaic/" title="Github">
+            <div>
+              <i class="fa fa-linkedin nav-icon"></i>
+            </div>
+          </a>
+          <a target="_blank" class="header__link" href="https://www.facebook.com/meatfree.muscle.hk/" title="Facebook">
+            <div>
+              <i class="fa fa-facebook nav-icon"></i>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="header__aboutme" id="aboutme">
+        <div class="header_aboutme-detail">
+          <p>
+            I am a software engineer, a fearless traveller and a passionate vegan weightlifter.
+          </p>
+          <p>
+            I had been working in difference startup from software consultant to startup and big online media. I had done Ruby on Rails, Phoenix(Elixir), Scala, NodeJS, AngularJS, ReactJS, ReactNative and Elm in these 3 years.
+          </p>
+          <p>
+            I now focus on learning function programming, distributed system, deep learning and blockchain technology.
+          </p>
+          <p>
+            This blog will be my personal notes mainly about technical things and hopefully someone can find them useful.
+          </p>
+        </div>
+      </div>
+    </header>
+    <article>
+  <div class="article__info">
+    <p class="article__title">
+       Understanding Javascript Closure
+    </p>
+    <time class="article__date">August 14, 2015</time>
+  </div>
+  <div class="article__content">
+    <p>Before talking about closures in Javascript, it is essential to understand Execution Context, Lexical Scope and Variables Environment first.</p>
+<p>Execution Context</p>
+<p>The first execution context, called Global Context, will be created when the program start to run. Any function invocation will create another execution context and and its context will be stack upon current execution context.</p>
+<p>Create a variable object composing of all the variables declared, function declaration and argument defined. Initialize the Scope Chain. Determine the value of “this”. Lexical Scoping</p>
+<div class="sourceCode"><pre class="sourceCode js"><code class="sourceCode javascript"><span class="kw">var</span> x <span class="op">=</span> <span class="st">'GLOBAL'</span><span class="op">;</span>
+
+<span class="kw">function</span> <span class="at">outer</span>() <span class="op">{</span>
+  <span class="kw">var</span> y <span class="op">=</span> <span class="st">&quot;outer&quot;</span><span class="op">;</span>    
+
+  <span class="kw">function</span> <span class="at">inner</span>() <span class="op">{</span>
+    <span class="kw">var</span> x <span class="op">=</span> <span class="st">&quot;inner&quot;</span><span class="op">;</span>
+    <span class="va">console</span>.<span class="at">log</span>(x)<span class="op">;</span>
+    <span class="va">console</span>.<span class="at">log</span>(y)<span class="op">;</span>
+  <span class="op">}</span>
+<span class="op">}</span></code></pre></div>
+<p>In this example, even though variable y is defined in function outer, it can be accessed inside function inner because it is lexically, physically written inside function outer.</p>
+<p>In contrary,</p>
+<div class="sourceCode"><pre class="sourceCode js"><code class="sourceCode javascript"><span class="kw">function</span> <span class="at">a</span>() <span class="op">{</span>
+  <span class="kw">var</span> x <span class="op">=</span> <span class="st">'from a'</span><span class="op">;</span>
+<span class="op">}</span>
+<span class="kw">function</span> <span class="at">b</span>() <span class="op">{</span>
+  <span class="kw">var</span> y <span class="op">=</span> <span class="st">'from b'</span><span class="op">;</span>
+  <span class="va">console</span>.<span class="at">log</span>(x)<span class="op">;</span>
+  <span class="va">console</span>.<span class="at">log</span>(y)<span class="op">;</span>
+<span class="op">}</span>
+<span class="at">b</span>() <span class="co">//x is undefined</span></code></pre></div>
+<p>Here x is undefined in function because the function b is not lexically sit inside a. (In some languages, dynamic scoping is supported and the variable can be influenced by looking up the calling stack of the function).</p>
+<p>Closure</p>
+<p>A closure is like a side effect of lexical scoping and it is created when a function returned reference local variables in lexically outer functions in its creation.</p>
+<p>Consider the example below.</p>
+<div class="sourceCode"><pre class="sourceCode js"><code class="sourceCode javascript"><span class="kw">function</span> <span class="at">createAccumulator</span>(initVal) <span class="op">{</span>
+  <span class="cf">return</span> <span class="kw">function</span> () <span class="op">{</span>
+    initVal <span class="op">+=</span> <span class="dv">1</span><span class="op">;</span>
+    <span class="cf">return</span> initVal<span class="op">;</span>
+  <span class="op">};</span>
+<span class="op">}</span>
+
+<span class="kw">var</span> accumulator <span class="op">=</span> <span class="at">createAccumulator</span>(<span class="dv">100</span>)<span class="op">;</span>
+<span class="at">accumulator</span>()<span class="op">;</span> <span class="co">// 101</span></code></pre></div>
+<p>Here, the returned function can still has access to variable in createAccumulator. Guess what, it is all because of lexical scoping. The function returned can still have access to all the local variables of its outer function where it is created.</p>
+<p>Functional Javascript</p>
+<p>Closures makes it possible to write functional programming in JavaScript.</p>
+<p>A simple example is currying. Currying is a technique to break down a function that takes multiple arguments into a series of function that take one or less argument.</p>
+<div class="sourceCode"><pre class="sourceCode js"><code class="sourceCode javascript"><span class="kw">function</span> <span class="at">add</span>(a<span class="op">,</span> b) <span class="op">{</span>
+  <span class="cf">if</span> (<span class="va">arguments</span>.<span class="at">length</span> <span class="op">&lt;</span> <span class="dv">1</span>) <span class="op">{</span>
+    <span class="cf">return</span> add<span class="op">;</span>
+  <span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> (<span class="va">arguments</span>.<span class="at">length</span> <span class="op">&lt;</span> <span class="dv">2</span>) <span class="op">{</span>
+    <span class="cf">return</span> <span class="kw">function</span>(c) <span class="op">{</span> <span class="cf">return</span> a <span class="op">+</span> c <span class="op">}</span>
+  <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span>
+    <span class="cf">return</span> a <span class="op">+</span> b<span class="op">;</span>
+  <span class="op">}</span>
+<span class="op">}</span>
+
+<span class="kw">var</span> add5 <span class="op">=</span> <span class="at">add</span>(<span class="dv">5</span>)<span class="op">;</span>
+<span class="kw">var</span> <span class="at">add5</span>(<span class="dv">10</span>) <span class="co">//return 15</span></code></pre></div>
+<p>Learning Closure is a key to master in javascript. It helps you write better small composable function and understand some design patterns like Module Pattern which provider both private and public encapsulation.</p>
+  </div>
+</article>
+
+</html>

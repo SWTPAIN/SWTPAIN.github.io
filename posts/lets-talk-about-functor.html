@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta property="og:site_name" content="KaFai Choi">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Let's talk functors in Javascript.">
+    <meta property="og:image" content>
+    <meta property="og:url" content="https://swtpain.github.io/posts/lets-talk-about-functor.html">
+    <meta property="og:description" content="Let's talk functors in Javascript.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="KaFai Choi">
+    <meta name="description" content="Let's talk functors in Javascript.">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="../css/default.css">
+    <link rel="stylesheet" type="text/css" href="../css/pandoc.css">
+    <link rel="alternate" type="application/rss+xml" href="../rss.xml" title="RSS">
+    <script>try{Typekit.load({ async: true });}catch(e){}</script>
+    <script type="text/javascript" src="https://cdn.rawgit.com/mathjax/MathJax/2.7.1/MathJax.js"></script>
+    <title>Let's talk functors in Javascript.</title>
+  </head>
+  <body>
+    <header class="header">
+      <div id="headerContent" class="header__content">
+        <span class="header__title">
+          <a href="../">Y = λf.(λx.f(xx))(λx.f(xx))</a>
+        </span>
+        <div class="header__links">
+          <a id="about-link" class="header__link" title="About">
+            <div>
+              <i class="fa fa-user nav-icon"></i>
+            </div>
+          </a>
+          <a target="_blank" class="header__link" href="https://github.com/swtpain" title="Linkedin">
+            <div>
+              <i class="fa fa-github nav-icon"></i>
+            </div>
+          </a>
+          <a target="_blank" class="header__link" href="https://www.linkedin.com/in/kafaic/" title="Github">
+            <div>
+              <i class="fa fa-linkedin nav-icon"></i>
+            </div>
+          </a>
+          <a target="_blank" class="header__link" href="https://www.facebook.com/meatfree.muscle.hk/" title="Facebook">
+            <div>
+              <i class="fa fa-facebook nav-icon"></i>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="header__aboutme" id="aboutme">
+        <div class="header_aboutme-detail">
+          <p>
+            I am a software engineer, a fearless traveller and a passionate vegan weightlifter.
+          </p>
+          <p>
+            I had been working in difference startup from software consultant to startup and big online media. I had done Ruby on Rails, Phoenix(Elixir), Scala, NodeJS, AngularJS, ReactJS, ReactNative and Elm in these 3 years.
+          </p>
+          <p>
+            I now focus on learning function programming, distributed system, deep learning and blockchain technology.
+          </p>
+          <p>
+            This blog will be my personal notes mainly about technical things and hopefully someone can find them useful.
+          </p>
+        </div>
+      </div>
+    </header>
+    <article>
+  <div class="article__info">
+    <p class="article__title">
+       Let's talk functors in Javascript.
+    </p>
+    <time class="article__date">July 16, 2017</time>
+  </div>
+  <div class="article__content">
+    <p>This article is targeted for any Javascript developer to get a brief understanding in functor.</p>
+<h2 id="what-is-a-functor">What is a functor?</h2>
+<p>A Functor is a way to apply a function over some structure that we don’t want to alter.</p>
+<p>Any Javascript developer must have already used functor in their daily works. A good example is <code>Array</code>. Consider the following example.</p>
+<div class="sourceCode"><pre class="sourceCode js"><code class="sourceCode javascript"><span class="kw">const</span> plus1 <span class="op">=</span> val <span class="op">=&gt;</span> val <span class="op">+</span> <span class="dv">1</span>
+<span class="kw">const</span> plus2 <span class="op">=</span> val <span class="op">=&gt;</span> val <span class="op">+</span> <span class="dv">2</span>
+
+<span class="at">map</span>(plus1)[<span class="dv">1</span><span class="op">,</span><span class="dv">2</span><span class="op">,</span><span class="dv">3</span>] <span class="co">// =&gt; [2, 3, 4]</span>
+<span class="at">map</span>(plus2)[<span class="dv">1</span><span class="op">,</span><span class="dv">2</span><span class="op">,</span><span class="dv">3</span>] <span class="co">// =&gt; [3, 4, 5]</span></code></pre></div>
+<p>Here the good thing of <code>map</code> is we can transform the element inside Array one by one by any arbitrary function and return a new Array which mean the structure is maintained.</p>
+<p>In Haskell, just as all algebras, it is implemented with typeclasses.</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">class</span> <span class="dt">Functor</span> f <span class="kw">where</span>
+<span class="ot">  fmap ::</span> (a <span class="ot">-&gt;</span> b) <span class="ot">-&gt;</span> f a <span class="ot">-&gt;</span> f b</code></pre></div>
+<h2 id="functor-laws">Functor Laws</h2>
+<p>There are two laws that every functor has to obey. They are identity &amp; composition.</p>
+<h3 id="identity">Identity</h3>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">fmap id <span class="fu">==</span> id <span class="fu">#</span> id is the identity function<span class="fu">.</span> i<span class="fu">.</span>e<span class="fu">.</span> id x <span class="fu">=</span> x</code></pre></div>
+<p>The implication is if we didn’t change the outer structure and f is identity. The output will be just same as input.</p>
+<h3 id="composition">Composition</h3>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">fmap (f <span class="fu">.</span> g) <span class="fu">==</span> fmap f <span class="fu">.</span> fmap g</code></pre></div>
+<p>The implication is thatfmap is composable which means composing two functions and then mapping the resulting function over a functor is the same as first mapping one function over the functor and then mapping the other one.</p>
+<p>In language that’s strictly evaluated, it brings us advantage by avoiding loop over the data structure twice.</p>
+<h2 id="example">Example</h2>
+<h3 id="maybe">Maybe</h3>
+<p>If you tried using flow-typed or typescript, you will know how useful <code>Maybe</code> or <code>Optional</code> is. The idea of <code>Maybe</code> type is to handle the possibility of absence of proper value(like <code>undefined</code> or <code>null</code> in JS). Consider the following example,</p>
+<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript">@flow
+<span class="kw">const</span> user<span class="op">:</span> <span class="op">{</span><span class="dt">name</span><span class="op">:</span> <span class="op">?</span>string<span class="op">,</span> age: <span class="op">?</span>number} <span class="op">=</span> <span class="op">{</span>
+  <span class="dt">name</span><span class="op">:</span> <span class="kw">null</span><span class="op">,</span>
+  <span class="dt">age</span><span class="op">:</span> <span class="dv">10</span>
+<span class="op">}</span>
+<span class="co">// the following code will not pass type check because it is not safe.</span>
+<span class="cf">if</span> (<span class="va">user</span>.<span class="va">name</span>.<span class="at">length</span> <span class="op">&lt;</span> <span class="dv">10</span>) <span class="op">{</span>
+  <span class="co">// doing crazy stuff</span>
+<span class="op">}</span>
+
+<span class="co">// this will pass type check</span>
+<span class="cf">if</span> (<span class="va">user</span>.<span class="at">name</span> <span class="op">!==</span> <span class="kw">null</span> <span class="op">||</span> <span class="va">user</span>.<span class="at">name</span> <span class="op">!==</span> <span class="kw">undefined</span>) <span class="op">{</span>
+  <span class="cf">if</span> (<span class="va">user</span>.<span class="va">name</span>.<span class="at">length</span> <span class="op">&lt;</span> <span class="dv">10</span>) <span class="op">{</span>
+    <span class="co">// doing crazy stuff</span>
+  <span class="op">}</span>
+<span class="op">}</span></code></pre></div>
+<p>So the <code>Maybe</code> type allows us to model and handle cases of non-existing values explicitely because by lifting it to type level, the compiler or type-checker will require us to handle two possible case and error in runtime can be avoided.</p>
+<p>A naive implementation of writing Maybe functor in JS is as follow</p>
+<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">const</span> Just <span class="op">=</span> val <span class="op">=&gt;</span> (<span class="op">{</span>
+  <span class="dt">map</span><span class="op">:</span> f <span class="op">=&gt;</span> <span class="at">Just</span>(<span class="at">f</span>(val))<span class="op">,</span>
+  <span class="dt">value</span><span class="op">:</span> val
+<span class="op">}</span>)<span class="op">,</span>
+<span class="kw">const</span> Nothing <span class="op">=</span> <span class="op">{</span>
+  <span class="dt">map</span><span class="op">:</span> Nothing<span class="op">,</span>
+  <span class="dt">value</span><span class="op">:</span> Nothing
+<span class="op">}</span>
+
+<span class="kw">const</span> Maybe <span class="op">=</span> <span class="op">{</span>
+  Just<span class="op">,</span> Nothing
+<span class="op">}</span>
+
+<span class="co">// So we can use them like the following</span>
+<span class="kw">const</span> user <span class="op">=</span> <span class="op">{</span>
+  <span class="dt">name</span><span class="op">:</span> <span class="va">Maybe</span>.<span class="at">Nothing</span><span class="op">,</span>
+  <span class="dt">age</span><span class="op">:</span> <span class="va">Maybe</span>.<span class="at">Just</span>(<span class="dv">10</span>)
+<span class="op">}</span>
+
+userAfter10Years <span class="op">=</span>  <span class="va">user</span>.<span class="va">age</span>.<span class="at">map</span>(age <span class="op">=&gt;</span> age <span class="op">+</span> <span class="dv">10</span>)
+<span class="va">userAfter10Years</span>.<span class="va">age</span>.<span class="at">value</span> <span class="co">// =&gt; 20</span>
+
+userChangeName <span class="op">=</span> <span class="va">user</span>.<span class="va">name</span>.<span class="at">map</span>(name <span class="op">=&gt;</span> name <span class="op">+</span> <span class="st">'Choi'</span>)
+<span class="va">userChangeName</span>.<span class="va">name</span>.<span class="at">value</span> <span class="co">// =&gt; Maybe.Nothing</span></code></pre></div>
+<p>See there is no if statement checking anywhere. Our program become more declarative and explicitly handling error case.</p>
+<h3 id="function">Function</h3>
+<p>Functions are functors too!</p>
+<p>Now, lets get back to Haskell syntax because it is conciser.</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">fmap<span class="ot"> ::</span> <span class="dt">Functor</span> f <span class="ot">=&gt;</span> (a <span class="ot">-&gt;</span> b) <span class="ot">-&gt;</span> f a <span class="ot">-&gt;</span> f b
+
+<span class="ot"># and the maximally polymorphic version is (a -&gt; b) -&gt; a -&gt; b</span>
+<span class="ot"># and this is function application</span>
+
+<span class="ot">($) ::</span> (a <span class="ot">-&gt;</span> b) <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> b</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">const</span> compose <span class="op">=</span> f <span class="op">=&gt;</span> g <span class="op">=&gt;</span> x <span class="op">=&gt;</span> <span class="at">f</span>(<span class="at">g</span>(x))
+<span class="va">Function</span>.<span class="va">prototype</span>.<span class="at">map</span> <span class="op">=</span> <span class="kw">function</span>(f) <span class="op">{</span>
+  <span class="cf">return</span> <span class="at">compose</span>(f)(<span class="kw">this</span>)
+<span class="op">}</span>  </code></pre></div>
+<p>So now as long as we can prove thie map implementation obey identity and composition, Function is an instance of Functor as well.</p>
+<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="co">// Identity</span>
+<span class="kw">const</span> id <span class="op">=</span> x <span class="op">=&gt;</span> x
+<span class="va">f</span>.<span class="at">map</span>(id)
+<span class="co">// compose(id)(f)</span>
+<span class="co">// x =&gt; id(f(x))</span>
+<span class="co">// x =&gt; f(x)</span>
+<span class="co">// f</span>
+
+<span class="co">// example</span>
+<span class="kw">const</span> plus1 <span class="op">=</span> x <span class="op">=&gt;</span> x <span class="op">+</span> <span class="dv">1</span>
+resultF <span class="op">=</span> <span class="va">plus1</span>.<span class="at">map</span>(id)
+<span class="at">resultF</span>(<span class="dv">2</span>) <span class="co">// =&gt; 3</span>
+<span class="at">resultF</span>(<span class="dv">3</span>) <span class="co">// =&gt; 4</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="co">// Composition</span>
+<span class="va">f</span>.<span class="at">map</span>(<span class="at">compose</span>(f2<span class="op">,</span> f1))
+<span class="co">// f.map(x =&gt; f1(f2(x)))</span>
+<span class="co">// compose(x =&gt; f1(f2(x)))(f)</span>
+<span class="co">// y =&gt; f((x =&gt; f1(f2(x)))(y))</span>
+<span class="co">// y =&gt; f((f1(f2(y))))</span>
+
+<span class="va">f</span>.<span class="at">map</span>(f1).<span class="at">map</span>(f2)
+<span class="co">// compose(f1)(f).map(f2)</span>
+<span class="co">// (x =&gt; f1(f(x))).map(f2)</span>
+<span class="co">// compose(f2)(x =&gt; f1(f(x)))</span>
+<span class="co">// y =&gt; f2(x =&gt; f1(f(x))(y))</span>
+<span class="co">// y =&gt; f2((f1(f(y))))</span>
+
+<span class="co">// example</span>
+<span class="kw">const</span> plus1 <span class="op">=</span> x <span class="op">=&gt;</span> x <span class="op">+</span> <span class="dv">1</span>
+<span class="kw">const</span> plus3 <span class="op">=</span> x <span class="op">=&gt;</span> x <span class="op">+</span> <span class="dv">3</span>
+<span class="kw">const</span> time4 <span class="op">=</span> x <span class="op">=&gt;</span> x <span class="op">*</span> <span class="dv">4</span>
+<span class="kw">const</span> resultF1 <span class="op">=</span> <span class="va">plus1</span>.<span class="at">map</span>(<span class="at">compose</span>(plus3)(time4))
+<span class="kw">const</span> resultF2 <span class="op">=</span> <span class="va">plus1</span>.<span class="at">map</span>(time4).<span class="at">map</span>(plus3)
+<span class="at">resultF1</span>(<span class="dv">3</span>) <span class="co">// =&gt; 19</span>
+<span class="at">resultF2</span>(<span class="dv">3</span>) <span class="co">// =&gt; 19</span></code></pre></div>
+<p>Now you see we can turn function into functor by assign compose as fmap. By making our type as functor, we can use the same abstraction from functor to transform value regardless of any value in side the functor without altering the outer structure.</p>
+<h3 id="references-resources">References &amp; Resources</h3>
+<p><a href="http://adit.io/posts/2013-04-17-functors,_applicatives,_and_monads_in_pictures.html">Functors, Applicatives, And Monads In Pictures</a></p>
+<p><a href="https://github.com/ramda/ramda-fantasy">Ramda-Fantasy</a></p>
+<p><a href="https://www.youtube.com/watch?v=YLIH8TKbAh4">Functors - FunFunFunction #10</a></p>
+  </div>
+</article>
+
+</html>

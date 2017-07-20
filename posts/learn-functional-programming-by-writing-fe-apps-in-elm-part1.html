@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta property="og:site_name" content="KaFai Choi">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Learn functional programming by writing FE apps in Elm (pt.1)">
+    <meta property="og:image" content>
+    <meta property="og:url" content="https://swtpain.github.io/posts/learn-functional-programming-by-writing-fe-apps-in-elm-part1.html">
+    <meta property="og:description" content="Learn functional programming by writing FE apps in Elm (pt.1)">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="KaFai Choi">
+    <meta name="description" content="Learn functional programming by writing FE apps in Elm (pt.1)">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="../css/default.css">
+    <link rel="stylesheet" type="text/css" href="../css/pandoc.css">
+    <link rel="alternate" type="application/rss+xml" href="../rss.xml" title="RSS">
+    <script>try{Typekit.load({ async: true });}catch(e){}</script>
+    <script type="text/javascript" src="https://cdn.rawgit.com/mathjax/MathJax/2.7.1/MathJax.js"></script>
+    <title>Learn functional programming by writing FE apps in Elm (pt.1)</title>
+  </head>
+  <body>
+    <header class="header">
+      <div id="headerContent" class="header__content">
+        <span class="header__title">
+          <a href="../">Y = λf.(λx.f(xx))(λx.f(xx))</a>
+        </span>
+        <div class="header__links">
+          <a id="about-link" class="header__link" title="About">
+            <div>
+              <i class="fa fa-user nav-icon"></i>
+            </div>
+          </a>
+          <a target="_blank" class="header__link" href="https://github.com/swtpain" title="Linkedin">
+            <div>
+              <i class="fa fa-github nav-icon"></i>
+            </div>
+          </a>
+          <a target="_blank" class="header__link" href="https://www.linkedin.com/in/kafaic/" title="Github">
+            <div>
+              <i class="fa fa-linkedin nav-icon"></i>
+            </div>
+          </a>
+          <a target="_blank" class="header__link" href="https://www.facebook.com/meatfree.muscle.hk/" title="Facebook">
+            <div>
+              <i class="fa fa-facebook nav-icon"></i>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="header__aboutme" id="aboutme">
+        <div class="header_aboutme-detail">
+          <p>
+            I am a software engineer, a fearless traveller and a passionate vegan weightlifter.
+          </p>
+          <p>
+            I had been working in difference startup from software consultant to startup and big online media. I had done Ruby on Rails, Phoenix(Elixir), Scala, NodeJS, AngularJS, ReactJS, ReactNative and Elm in these 3 years.
+          </p>
+          <p>
+            I now focus on learning function programming, distributed system, deep learning and blockchain technology.
+          </p>
+          <p>
+            This blog will be my personal notes mainly about technical things and hopefully someone can find them useful.
+          </p>
+        </div>
+      </div>
+    </header>
+    <article>
+  <div class="article__info">
+    <p class="article__title">
+       Learn functional programming by writing FE apps in Elm (pt.1)
+    </p>
+    <time class="article__date">July 20, 2017</time>
+  </div>
+  <div class="article__content">
+    <h2 id="foreword">Foreword</h2>
+<p>As a self-taught programmer who had worked in the industry for 3 years, I always hear a lot of good thing about functional programming while there are lots of criticism about it like it’s too academia and hard to learn. Nonetheless, there are lots of concept inspired by FP already widely used in our day-to-day work, for example, higher-order function in Javascript like map, reduce and list comprehension.</p>
+<p>Also with the rise of redux as a predictable state container in FE, it’s amazing to see how simple but powerful is redux and the core ceonpt in redux are immutability of data and pure functions.</p>
+<p>Javascript is a great language especially EC39 made the decision to move to a yearly model for defining new standards, and the new features in es6 are already very appealing.</p>
+<p>However, due to its dynamic typed and imperative nature, it’s very easy for developer to make mistake causing runtime exception, bug that take days to solve it and high complexity of codebase that no one want to touch it.</p>
+<p>So this trigger to me to go deeper into learning FP. And Elm is my first choice because of its simplicity and the pureness in FP. So in this series, we will learn FP by building an apps in Elm.</p>
+<h3 id="whats-elm">What’s Elm?</h3>
+<p>Elm is a pure functional programming language that compile to JS and CSS. Elm is very friendly for functional programming beginner and its more like a framework with a language attached.</p>
+<p><span class="math display">\[ \[ \Phi(x) = \frac{1}{\sqrt{2 \pi}} \int_{-\infty}^x e^{-\xi^2/2}\; d\xi \] \]</span></p>
+<h3 id="what-are-we-going-to-build">What are we going to build</h3>
+<p>We will build a quiz-maker single page application where anyone can create quiz and allow people to do the quiz.</p>
+<h3 id="project-setup">Project Setup</h3>
+<p>To start with, we will use <a href="https://github.com/elm-community/elm-webpack-starter">elm-webpack-start</a> as our boilerplate.</p>
+<p>Let’s have a quick look in to folder structure</p>
+<pre><code>- src
+  |- elm
+      |- Components
+          |- Hello.elm
+      |- Main.elm
+  |- static
+      |- img
+      |- styles
+      |- index.html
+      |- index.js</code></pre>
+<p><code>index.js</code> will be our app entry point which basically only mount our elm application in DOM.</p>
+<p>More interesting is inside <code>src/elm/Main.elm</code>. The entry point of elm application will be the <code>main</code> function.</p>
+<h4 id="the-elm-architecture-aka-tea">The Elm Architecture aka TEA</h4>
+<p>As said before, elm is more like a programming language designed for a framework. Every developer who has experience in Redux will find its pattern so familiar.</p>
+<p>There will be three most important parts which are model, update and view.</p>
+<pre class="elm"><code>type alias Model = Int
+model : number
+model = 0</code></pre>
+<p>The model will usually be a more complicated record. Yet in the boilerplate example, the model is simply an integer. And its initial value is set as 0. The model will be the state of your application. And you will notice that there is type annotation. Although it’s not necessary to type annotation by yourself cause Elm compiler is usually smart enough doing type inference, it’s generally encouraged to declare annotation yourself and usually you will find it’s easier to write program by thinking in type first.</p>
+<pre><code>-- UPDATE
+type Msg = NoOp | Increment
+
+update : Msg -&gt; Model -&gt; Model
+update msg model =
+  case msg of
+    NoOp -&gt; model
+    Increment -&gt; model + 1</code></pre>
+<p>For the update part, <code>type Msg = NoOp | Increment</code> is an example of union type.</p>
+<h5 id="union-types">Union Types</h5>
+<p>Union types are also called Algebraic data type which is a composite type. You will soon find union types are very expressive way to create your custom datatype to describe the date our application process.</p>
+<h5 id="what-algebraic">What? Algebraic?</h5>
+<p>This just meant it’s a kind of composite type. In elm, you have sum or product type. A product type mean the number of different value is the Cartesian product of different value of each types in the data constructors. A sum type mean the value is a set of value that is the sum of value in data constructors.</p>
+<pre class="elm"><code>-- Example of Sum Type
+type Boolean' = False' | True'
+-- Example of Product Type
+type Point = Point Integer Integer
+
+-- We can also have sum of product types
+type Guest = Guest
+type User = User String Integer
+type VIP = VIP String Integer String
+type Animal = Guest | User | VIP</code></pre>
+<p>Let’s break down <code>type Msg = NoOp | Increment</code>. 1. <code>type Msg =</code> mean we declare a new type called <code>Msg</code> 2. <code>NoOp | Increment</code> Two Data Constructor. One is <code>NoOp</code> and another is <code>Increment</code>. <code>|</code> logical disjunction you can think it as <code>or</code> which also imply this is a sum type.</p>
+<p>In Javascript, we will probably use string <code>msg = 'NoOp'; msg = 'Increment'</code> or slight better an object emulating Enum <code>const MSG = {NoOp: 'NoOp', Increment: 'Increment'}</code> or es6 Symbol. But all these thing cannot guarantee developer to match all possible case of msg and it’s not easy to compose them.</p>
+<p>However, with pattern matching and compiler in Elm, we can enforce developer to handle all possible case. In update function, we use <code>case msg of</code> and we have to specify what will we return in all possible case of Msg and this is called pattern matching which is the only way to do operation on ADT data. If we miss <code>Increment</code> in <code>case of</code>, compiler will throw error.</p>
+<p>So back to boilerplate example, the update function will take 2 arguments, a message and a model and return a new model. So the its basically a reducer. And update function will be called by Elm runtime whenever there is Cmd from either DOM event or other external source like websocket.</p>
+<pre><code>-- View
+view : Model -&gt; Html Msg
+view model =
+  div [ class &quot;container&quot;, style [(&quot;margin-top&quot;, &quot;30px&quot;), ( &quot;text-align&quot;, &quot;center&quot; )] ][    -- inline CSS (literal)
+    div [ class &quot;row&quot; ][
+      div [ class &quot;col-xs-12&quot; ][
+        div [ class &quot;jumbotron&quot; ][
+          img [ src &quot;static/img/elm.jpg&quot;, style styles.img ] []                             -- inline CSS (via var)
+          , hello model                                                                     -- ext 'hello' component (takes 'model' as arg)
+          , p [] [ text ( &quot;Elm Webpack Starter&quot; ) ]
+          , button [ class &quot;btn btn-primary btn-lg&quot;, onClick Increment ] [                  -- click handler
+            span[ class &quot;glyphicon glyphicon-star&quot; ][]                                      -- glyphicon
+            , span[][ text &quot;FTW!&quot; ]
+          ]
+        ]
+      ]
+    ]
+  ]</code></pre>
+<p>It might look lots of thing going on here but view is actually the simplest thing in TEA. The return type of view function is <code>Html Msg</code> which means the only responsibility of view is to return HTML(not exactly, Elm is virtual-dom behind the scene). We can think of it as pure function in React Component. There is no lifecycle. And because it’s just a function in Elm, you can have full power instead of limited capability in template languages.</p>
+<p>In <code>button [ class &quot;btn btn-primary btn-lg&quot;, onClick Increment ] [...]</code>, the <code>onClick</code> function will take a message and the message will create a command Msg will eventually cause Elm runtime apply update function and get a new state which lead to UI re-render.</p>
+<p>So that’s long walkthrough will the boilerplate. We will start building a dummy UI for our quiz maker in the second part.</p>
+<h3 id="references">References</h3>
+<p><a href="https://en.wikipedia.org/wiki/Algebraic_data_type">Algebraic Data Type</a></p>
+  </div>
+</article>
+
+</html>
