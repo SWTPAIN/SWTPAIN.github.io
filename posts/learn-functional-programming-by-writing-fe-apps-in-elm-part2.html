@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta property="og:site_name" content="KaFai Choi">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Learn functional programming by writing FE apps in Elm (pt.2)">
+    <meta property="og:image" content>
+    <meta property="og:url" content="https://swtpain.github.io/posts/learn-functional-programming-by-writing-fe-apps-in-elm-part2.html">
+    <meta property="og:description" content="Learn functional programming by writing FE apps in Elm (pt.2)">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="KaFai Choi">
+    <meta name="description" content="Learn functional programming by writing FE apps in Elm (pt.2)">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="../css/default.css">
+    <link rel="stylesheet" type="text/css" href="../css/pandoc.css">
+    <link rel="alternate" type="application/rss+xml" href="../rss.xml" title="RSS">
+    <script>try{Typekit.load({ async: true });}catch(e){}</script>
+    <script type="text/javascript" src="https://cdn.rawgit.com/mathjax/MathJax/2.7.1/MathJax.js"></script>
+    <title>Learn functional programming by writing FE apps in Elm (pt.2)</title>
+  </head>
+  <body>
+    <header class="header">
+      <div id="headerContent" class="header__content">
+        <span class="header__title">
+          <a href="../">Y = λf.(λx.f(xx))(λx.f(xx))</a>
+        </span>
+        <div class="header__links">
+          <a id="about-link" class="header__link" title="About">
+            <div>
+              <i class="fa fa-user nav-icon"></i>
+            </div>
+          </a>
+          <a target="_blank" class="header__link" href="https://github.com/swtpain" title="Linkedin">
+            <div>
+              <i class="fa fa-github nav-icon"></i>
+            </div>
+          </a>
+          <a target="_blank" class="header__link" href="https://www.linkedin.com/in/kafaic/" title="Github">
+            <div>
+              <i class="fa fa-linkedin nav-icon"></i>
+            </div>
+          </a>
+          <a target="_blank" class="header__link" href="https://www.facebook.com/meatfree.muscle.hk/" title="Facebook">
+            <div>
+              <i class="fa fa-facebook nav-icon"></i>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="header__aboutme" id="aboutme">
+        <div class="header_aboutme-detail">
+          <p>
+            I am a software engineer, a fearless traveller and a passionate vegan weightlifter.
+          </p>
+          <p>
+            I had been working in difference startup from software consultant to startup and big online media. I had done Ruby on Rails, Phoenix(Elixir), Scala, NodeJS, AngularJS, ReactJS, ReactNative and Elm in these 3 years.
+          </p>
+          <p>
+            I now focus on learning function programming, distributed system, deep learning and blockchain technology.
+          </p>
+          <p>
+            This blog will be my personal notes mainly about technical things and hopefully someone can find them useful.
+          </p>
+        </div>
+      </div>
+    </header>
+    <article>
+  <div class="article__info">
+    <p class="article__title">
+       Learn functional programming by writing FE apps in Elm (pt.2)
+    </p>
+    <time class="article__date">July 23, 2017</time>
+  </div>
+  <div class="article__content">
+    <h2 id="progress">Progress</h2>
+<p>After pt2, we can create quiz and see list of quizzes in our app. In stead of a walkthrough of coding, it will be highlights and explanations about some key changes we made.</p>
+<p>To read the source code and play around with the apps,</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">git</span> clone git@github.com:SWTPAIN/quiz-maker.git
+<span class="fu">git</span> checkout v0.0.2</code></pre></div>
+<h2 id="new-folder-structure">New Folder Structure</h2>
+<pre class="elm"><code>-- new folder strucutre
+-- |- elm
+--     |- Main.elm
+--     |- Model
+--        |- Quiz.elm
+--        |- Shared.elm
+--     |- Model.elm
+--     |- QuizWizard
+--        |- Model.elm
+--        |- Update.elm
+--        |- View.elm
+--     |- Update
+--        |- Utils.elm
+--     |- Update.elm
+--     |- View.elm</code></pre>
+<p>We have separated <code>update</code>, <code>view</code>, <code>Model</code> into its own module. And notice there is a folder <code>QuizWizard</code> which contain <code>Model.elm</code>, <code>Update.elm</code>, <code>View.elm</code>. Unlike React or most other JS framework, there are no reusable components in Elm but only reusable functions. And by keeping pure function, we can avoid using internal state in component.</p>
+<h2 id="use-html.program-instead-html.beginnerprogram">Use Html.program instead Html.beginnerProgram</h2>
+<pre class="elm"><code>-- Main.elm
+main : Program Never Model Msg
+main =
+    Html.program
+        { init = Update.init
+        , view = View.view
+        , update = Update.update
+        , subscriptions = Update.subscriptions
+        }
+</code></pre>
+<p>We can ignore <code>subscriptions</code> function for now. The main difference is the <code>update</code> function return a tuple of <code>Model</code> and <code>Cmd Msg</code>. A command is a description of an effect that Elm Runtime help us to perform so our code can stay pure in Elm.</p>
+<h2 id="thinking-in-model">Thinking in Model</h2>
+<p>It is very common to think about model before we make any change because <code>Model</code> is the state of whole application.</p>
+<pre class="elm"><code>-- Model.elm
+module Model exposing (..)
+
+import QuizWizard.Model as QuizWizardModel
+
+type alias Model =
+    { quizzes : List Quiz
+    , quizWizard : QuizWizardModel.Model
+    , notification : Maybe String
+    }
+
+-- QuizWizard/Model.elm
+module QuizWizard.Model exposing (..)
+
+type alias Model =
+    { title :
+        String
+    , questions : List Question
+    , currentQuestionField :
+        QuestionField
+    , error : Maybe Error
+    , currentStep : Step
+    }
+
+type alias QuestionField =
+    { title : String
+    , correctAnswer : String
+    , prevWrongAnswers : List String
+    , lastWrongAnswer : String
+    }
+
+-- Model/Quiz.elm
+module Model.Quiz exposing (..)
+
+
+type alias Quiz =
+    { title : String
+    , questions : List Question
+    }
+
+
+type alias Question =
+    { title : String
+    , correctAnswer : String
+    , wrongAnswers : List String
+    }</code></pre>
+<p>The model type is record coding field <code>quizzes</code>, <code>quizWizard</code> and <code>notification</code> which explicitly define our data and we can also easily know what this application does just by reading the <code>Model</code> type.</p>
+<h3 id="impossible-state">Impossible State</h3>
+<p>Let’s look at the <code>QuestionField</code> which is a Record with title, correctAnswer, prevWrongAnswers and lastWrongAnswer. You might wonder why don’t we just simplify it to as following:</p>
+<pre class="elm"><code>type alias QuestionField =
+    { title : String
+    , correctAnswer : String
+    , wrongAnswers : List String
+    }</code></pre>
+<p>If we simplify the QuestionField type as this, what if we see the questionField as the following during our runtime?</p>
+<pre class="elm"><code>questionField = {
+  title = &quot;Question 1&quot;
+  , correctAnswer : &quot;Correct Answer&quot;
+  , wrongAnswers : []
+}</code></pre>
+<p>This is not what we want because we want the <code>wrongAnswers</code> to have at least one element. And if we explicitly saprate the <code>lastWrongAnswer</code> as its own field, we can guarantee there will be at least one element without the need in writing defensive code which also save us from writing unnecessary test.</p>
+<h3 id="msg">Msg</h3>
+<pre class="elm"><code>-- QuizWizard/Model.elm
+
+type Msg
+    = UpdateQuizTitle String
+    | UpdateCurrentQuestionFieldMsg UpdateCurrentQuestionFieldMsg
+    | StartAddQuestion
+    | AddCurrentQuestion
+    | CreateQuizRequest
+    | CreateQuiz Quiz
+    | BackStep
+
+
+type UpdateCurrentQuestionFieldMsg
+    = UpdateCurrentQuetionTitle String
+    | UpdateCurrentQuestionCorrectAnswer String
+    | UpdateCurrentQuestionPrevWrongAnswer Int String
+    | UpdateCurrentQuestionLastWrongAnswer String
+    | AddOneWrongQuestion</code></pre>
+<p>We define all the possible user action in <code>Msg</code> Type and we group current question field into its own sum Union type so we can have a separate function to handle it.</p>
+<pre class="elm"><code>-- QuizWizard/Update.elm
+update : Msg -&gt; Model -&gt; ( Model, Cmd Msg )
+update msg model =
+    case msg of
+        UpdateQuizTitle title -&gt;
+            ( { model
+                | title = title
+              }
+            , Cmd.none
+            )
+
+        UpdateCurrentQuestionFieldMsg updateCurrentQuestionFieldMsg -&gt;
+            ( { model
+                | currentQuestionField = updateCurrentQuestionField updateCurrentQuestionFieldMsg model.currentQuestionField
+              }
+            , Cmd.none
+            )
+
+updateCurrentQuestionField : UpdateCurrentQuestionFieldMsg -&gt; QuestionField -&gt; QuestionField
+updateCurrentQuestionField updateCurrentQuestionFieldMsg
+  case updateCurrentQuestionFieldMsg of
+      UpdateCurrentQuetionTitle title -&gt;
+          { questionField
+              | title = title
+          }
+    -- ...
+ questionField =</code></pre>
+<p>Here, we can also see one of the advantage of ADT over classes is the easiness of adding a new operation on a new member in a type. No other function in update has to be changed if we modify only the function applying on one member of sum Union Type.</p>
+<h2 id="views-is-just-purely-functions">Views is just purely functions</h2>
+<pre class="elm"><code>-- QuizWizard/View.elm
+view : Model -&gt; Html Msg
+view model =
+    div [ class &quot;panel&quot; ]
+        [ div [ class &quot;panel-heading&quot; ] [ text &quot;Create your own quiz&quot; ]
+        , div [ class &quot;panel-block&quot; ]
+            [ div [ class &quot;section&quot; ]
+                [ div [ class &quot;title&quot; ] [ p [] [ model |&gt; title |&gt; text ] ]
+                , div []
+                    [ notification model
+                    , form model
+                    ]
+                , footer model
+                ]
+            ]
+        ]
+
+notification : Model -&gt; Html Msg
+notification { error } =
+    case error of
+        Nothing -&gt;
+            div [] []
+
+        Just error_ -&gt;
+            div [ class &quot;notification is-danger&quot; ]
+                [ text error_
+                ]
+
+form : Model -&gt; Html Msg
+form { title, currentQuestionField, currentStep } =
+    let
+        formContent =
+            case currentStep of
+                AddTitle -&gt;
+                    quizTitleForm title
+
+                AddQuestion -&gt;
+                    quizQuestionForm currentQuestionField |&gt; Html.map UpdateCurrentQuestionFieldMsg
+    in
+        Html.form []
+            [ formContent
+            ]
+
+quizTitleForm : String -&gt; Html Msg
+quizTitleForm title =
+    div [ class &quot;field&quot; ]
+        [ div [ class &quot;control&quot; ]
+            [ input
+                [ class &quot;input&quot;
+                , type_ &quot;text&quot;
+                , placeholder &quot;Quiz Title&quot;
+                , onInput UpdateQuizTitle
+                , value title
+                ]
+                []
+            ]
+        ]
+</code></pre>
+<p>Because view is just elm function, you can compose them by applying other view function. And it’s generally good practice to only require minimal argument in view function instead of the whole <code>Model</code> and so we can scale the application easily in the future.</p>
+<h3 id="child-parent-communication">Child-parent communication</h3>
+<p>In our quiz-maker application, when the user click create in quiz wizard, we will need to add the quiz into our list. However, it cannot be done in <code>QuizWizard.Update</code> because the <code>quizzes</code> field belongs in the <code>Model</code> in <code>main.elm</code>. And this is the time that the parent need to respond to some event happen inside the children. There are three ways to do that in elm which are NoMap, OutMsg and Translator.</p>
+<p>And in pt2, we will only use the most naive and intuitive way to handle child-parent communication.</p>
+<pre class="elm"><code>-- Update.elm
+update : Msg -&gt; Model -&gt; ( Model, Cmd Msg )
+update msg model =
+    case msg of
+        QuizWizardMsg quizWizardMsg -&gt;
+            case quizWizardMsg of
+                QuizWizardModel.CreateQuiz quiz -&gt;
+                    ( { model
+                        | quizWizard = QuizWizardModel.initialModel
+                        , quizzes = quiz :: model.quizzes
+                        , notification = Just &quot;Your quiz is created&quot;
+                      }
+                    , Cmd.none
+                    )
+
+                _ -&gt;
+                    let
+                        ( quizWizard, cmd ) =
+                            QuizWizardUpdate.update quizWizardMsg model.quizWizard
+                    in
+                        ( { model
+                            | quizWizard = quizWizard
+                          }
+                        , Cmd.map QuizWizardMsg cmd
+                        )</code></pre>
+<p>So the update function in <code>Main.elm</code> will pattern match the msg <code>QuizWizardModel.CreateQuiz</code> and response to it instead of delegating the message to update function in <code>QuizWizard.Update</code>. We will discuss the other better three approach later in the series.</p>
+<h2 id="higher-kinded-types">Higher-kinded types</h2>
+<p>There will be validation checking when use try to add new question to the quiz. If some question is empty, a error notification will be shown.</p>
+<pre class="elm"><code>update : Msg -&gt; Model -&gt; ( Model, Cmd Msg )
+update msg model =
+    case msg of
+      -- ....
+      AddCurrentQuestion -&gt;
+          case getCurrentQuestion model.currentQuestionField of
+              Err err -&gt;
+                  { model | error = Just err } ! [ Cmd.none ]
+
+              Ok question -&gt;
+                  { model
+                      | questions = model.questions ++ [ question ]
+                      , currentQuestionField = defaultQuestionField
+                      , error = Nothing
+                  }
+                      ! [ Cmd.none ]
+
+
+
+getCurrentQuestion : QuestionField -&gt; Result Error Question
+getCurrentQuestion ({ title, correctAnswer, prevWrongAnswers, lastWrongAnswer } as questionField) =
+    case title of
+        &quot;&quot; -&gt;
+            Err &quot;Question Title cannnot be empty&quot;
+
+        title_ -&gt;
+            case correctAnswer of
+                &quot;&quot; -&gt;
+                    Err &quot;Correct Answer cannot be empty&quot;
+
+                correctAnswer_ -&gt;
+                    case getWrongAnswers questionField of
+                        Err err_ -&gt;
+                            Err err_
+
+                        Ok wrongAnswers -&gt;
+                            Ok
+                                { title = title_
+                                , correctAnswer = correctAnswer_
+                                , wrongAnswers = wrongAnswers
+                                }
+</code></pre>
+<p>The return type of <code>getCurrentQuestion</code> is <code>Result Error Question</code>. This type mean the value might be either <code>Error</code> or <code>Question</code>. This means that now the we have to handle both error and success case when we try to apply this function. And the difference of <code>Either</code> and <code>Maybe</code> is we can pass the error info instead of <code>Nothing</code>. As you can see there are three level nested pattern matching which might be hard to read, we will use <code>applicative</code> to make it more readable and intuitive in the next part.</p>
+<h2 id="reference">Reference</h2>
+<p>https://stackoverflow.com/questions/870919/why-are-haskell-algebraic-data-types-closed</p>
+  </div>
+</article>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-102897942-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>    
+</html>
