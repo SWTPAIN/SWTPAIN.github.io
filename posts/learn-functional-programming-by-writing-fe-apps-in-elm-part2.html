@@ -74,11 +74,11 @@
     <time class="article__date">July 23, 2017</time>
   </div>
   <div class="article__content">
-    <h2 id="progress">Progress</h2>
-<p>After pt2, we can create quiz and see list of quizzes in our app. In stead of a walkthrough of coding, it will be highlights and explanations about some key changes we made.</p>
-<p>To read the source code and play around with the apps,</p>
+    <h2 id="quizwizard-quiz-list">QuizWizard &amp; Quiz List</h2>
+<p>In part 2, we can create quiz and see list of quizzes in our app. Instead of a walkthrough of coding, it will be highlights and explanations about some key changes we made. It’s recommended to read the source code and play around with the apps before reading it.</p>
 <div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">git</span> clone git@github.com:SWTPAIN/quiz-maker.git
 <span class="fu">git</span> checkout v0.0.2</code></pre></div>
+<p><br /></p>
 <h2 id="new-folder-structure">New Folder Structure</h2>
 <pre class="elm"><code>-- new folder strucutre
 -- |- elm
@@ -96,6 +96,7 @@
 --     |- Update.elm
 --     |- View.elm</code></pre>
 <p>We have separated <code>update</code>, <code>view</code>, <code>Model</code> into its own module. And notice there is a folder <code>QuizWizard</code> which contain <code>Model.elm</code>, <code>Update.elm</code>, <code>View.elm</code>. Unlike React or most other JS framework, there are no reusable components in Elm but only reusable functions. And by keeping pure function, we can avoid using internal state in component.</p>
+<p><br /></p>
 <h2 id="use-html.program-instead-html.beginnerprogram">Use Html.program instead Html.beginnerProgram</h2>
 <pre class="elm"><code>-- Main.elm
 main : Program Never Model Msg
@@ -108,8 +109,9 @@ main =
         }
 </code></pre>
 <p>We can ignore <code>subscriptions</code> function for now. The main difference is the <code>update</code> function return a tuple of <code>Model</code> and <code>Cmd Msg</code>. A command is a description of an effect that Elm Runtime help us to perform so our code can stay pure in Elm.</p>
+<p><br /></p>
 <h2 id="thinking-in-model">Thinking in Model</h2>
-<p>It is very common to think about model before we make any change because <code>Model</code> is the state of whole application.</p>
+<p>Because of being the state of the whole application, it is very common to think about data structure in <code>Model</code> before we make any change.</p>
 <pre class="elm"><code>-- Model.elm
 module Model exposing (..)
 
@@ -157,7 +159,8 @@ type alias Question =
     , wrongAnswers : List String
     }</code></pre>
 <p>The model type is record coding field <code>quizzes</code>, <code>quizWizard</code> and <code>notification</code> which explicitly define our data and we can also easily know what this application does just by reading the <code>Model</code> type.</p>
-<h3 id="impossible-state">Impossible State</h3>
+<p><br /></p>
+<h2 id="impossible-state">Impossible State</h2>
 <p>Let’s look at the <code>QuestionField</code> which is a Record with title, correctAnswer, prevWrongAnswers and lastWrongAnswer. You might wonder why don’t we just simplify it to as following:</p>
 <pre class="elm"><code>type alias QuestionField =
     { title : String
@@ -171,7 +174,8 @@ type alias Question =
   , wrongAnswers : []
 }</code></pre>
 <p>This is not what we want because we want the <code>wrongAnswers</code> to have at least one element. And if we explicitly saprate the <code>lastWrongAnswer</code> as its own field, we can guarantee there will be at least one element without the need in writing defensive code which also save us from writing unnecessary test.</p>
-<h3 id="msg">Msg</h3>
+<p><br /></p>
+<h2 id="changing-applicaiton-state">Changing Applicaiton State</h2>
 <pre class="elm"><code>-- QuizWizard/Model.elm
 
 type Msg
@@ -190,7 +194,8 @@ type UpdateCurrentQuestionFieldMsg
     | UpdateCurrentQuestionPrevWrongAnswer Int String
     | UpdateCurrentQuestionLastWrongAnswer String
     | AddOneWrongQuestion</code></pre>
-<p>We define all the possible user action in <code>Msg</code> Type and we group current question field into its own sum Union type so we can have a separate function to handle it.</p>
+<p>We define all the possible action or event that can happen in <code>Msg</code> Type. These messages usually come from user’ interaction(Dom event), external source like websocket or runtime’s response for command.</p>
+<p>Note that we group current question field into its own sum Union type so we can have a separate function to handle it and avoid a crazily long pattern matching in update function.</p>
 <pre class="elm"><code>-- QuizWizard/Update.elm
 update : Msg -&gt; Model -&gt; ( Model, Cmd Msg )
 update msg model =
@@ -219,6 +224,7 @@ updateCurrentQuestionField updateCurrentQuestionFieldMsg
     -- ...
  questionField =</code></pre>
 <p>Here, we can also see one of the advantage of ADT over classes is the easiness of adding a new operation on a new member in a type. No other function in update has to be changed if we modify only the function applying on one member of sum Union Type.</p>
+<p><br /></p>
 <h2 id="views-is-just-purely-functions">Views is just purely functions</h2>
 <pre class="elm"><code>-- QuizWizard/View.elm
 view : Model -&gt; Html Msg
@@ -279,7 +285,8 @@ quizTitleForm title =
         ]
 </code></pre>
 <p>Because view is just elm function, you can compose them by applying other view function. And it’s generally good practice to only require minimal argument in view function instead of the whole <code>Model</code> and so we can scale the application easily in the future.</p>
-<h3 id="child-parent-communication">Child-parent communication</h3>
+<p><br /></p>
+<h2 id="child-parent-communication">Child-parent communication</h2>
 <p>In our quiz-maker application, when the user click create in quiz wizard, we will need to add the quiz into our list. However, it cannot be done in <code>QuizWizard.Update</code> because the <code>quizzes</code> field belongs in the <code>Model</code> in <code>main.elm</code>. And this is the time that the parent need to respond to some event happen inside the children. There are three ways to do that in elm which are NoMap, OutMsg and Translator.</p>
 <p>And in pt2, we will only use the most naive and intuitive way to handle child-parent communication.</p>
 <pre class="elm"><code>-- Update.elm
@@ -308,6 +315,7 @@ update msg model =
                         , Cmd.map QuizWizardMsg cmd
                         )</code></pre>
 <p>So the update function in <code>Main.elm</code> will pattern match the msg <code>QuizWizardModel.CreateQuiz</code> and response to it instead of delegating the message to update function in <code>QuizWizard.Update</code>. We will discuss the other better three approach later in the series.</p>
+<p><br /></p>
 <h2 id="higher-kinded-types">Higher-kinded types</h2>
 <p>There will be validation checking when use try to add new question to the quiz. If some question is empty, a error notification will be shown.</p>
 <pre class="elm"><code>update : Msg -&gt; Model -&gt; ( Model, Cmd Msg )
@@ -331,30 +339,52 @@ update msg model =
 
 getCurrentQuestion : QuestionField -&gt; Result Error Question
 getCurrentQuestion ({ title, correctAnswer, prevWrongAnswers, lastWrongAnswer } as questionField) =
-    case title of
-        &quot;&quot; -&gt;
-            Err &quot;Question Title cannnot be empty&quot;
+  Result.map3
+      (\title correctAnswer wrongAnswers -&gt;
+          { title = title
+          , correctAnswer = correctAnswer
+          , wrongAnswers = wrongAnswers
+          }
+      )
+      (if title == &quot;&quot; then
+          Err &quot;Question Title cannnot be empty&quot;
+       else
+          Ok title
+      )
+      (if correctAnswer == &quot;&quot; then
+          Err &quot;Correct Answer cannot be empty&quot;
+       else
+          Ok correctAnswer
+      )
+      (getWrongAnswers questionField)
 
-        title_ -&gt;
-            case correctAnswer of
-                &quot;&quot; -&gt;
-                    Err &quot;Correct Answer cannot be empty&quot;
-
-                correctAnswer_ -&gt;
-                    case getWrongAnswers questionField of
-                        Err err_ -&gt;
-                            Err err_
-
-                        Ok wrongAnswers -&gt;
-                            Ok
-                                { title = title_
-                                , correctAnswer = correctAnswer_
-                                , wrongAnswers = wrongAnswers
-                                }
+-- using map3 instead of nested pattern matching
+-- case title of
+--     &quot;&quot; -&gt;
+--         Err &quot;Question Title cannot be empty&quot;
+--
+--     title_ -&gt;
+--         case correctAnswer of
+--             &quot;&quot; -&gt;
+--                 Err &quot;Correct Answer cannot be empty&quot;
+--
+--             correctAnswer_ -&gt;
+--                 case getWrongAnswers questionField of
+--                     Err err_ -&gt;
+--                         Err err_
+--
+--                     Ok wrongAnswers -&gt;
+--                         Ok
+--                             { title = title_
+--                             , correctAnswer = correctAnswer_
+--                             , wrongAnswers = wrongAnswers
+--                             }
 </code></pre>
-<p>The return type of <code>getCurrentQuestion</code> is <code>Result Error Question</code>. This type mean the value might be either <code>Error</code> or <code>Question</code>. This means that now the we have to handle both error and success case when we try to apply this function. And the difference of <code>Either</code> and <code>Maybe</code> is we can pass the error info instead of <code>Nothing</code>. As you can see there are three level nested pattern matching which might be hard to read, we will use <code>applicative</code> to make it more readable and intuitive in the next part.</p>
+<p><code>Result</code> is a type constructor that take two types. Here the return type of <code>getCurrentQuestion</code> is <code>Result Error Question</code> which means the value of that type might be either <code>Error</code> or <code>Question</code>. So now the caller have to handle both error and success case when we try to apply this function. And the difference of <code>Either</code> and <code>Maybe</code> is we can pass the error info instead of <code>Nothing</code>.</p>
+<p>We use <code>Result.map3</code> here by turning title and correctAnswer to Result type. So we can avoid three level nested pattern matching which might be hard to read.</p>
+<p>And that’s all for the part two. In the next part, we will actually save the data to firebase and create a sharable link for user to give the quiz to friends. <br /></p>
 <h2 id="reference">Reference</h2>
-<p>https://stackoverflow.com/questions/870919/why-are-haskell-algebraic-data-types-closed</p>
+<p><a href="https://stackoverflow.com/questions/870919/why-are-haskell-algebraic-data-types-closed">why-are-haskell-algebraic-data-types-closed</a> <a href="https://www.youtube.com/watch?v=IcgmSRJHu_8">Make impossible state impossible</a></p>
   </div>
 </article>
 
