@@ -130,4 +130,4 @@ In `button [ class "btn btn-primary btn-lg", onClick Increment ] [...]`, the `on
 So that's long walkthrough will the boilerplate. We will start building a dummy UI for our quiz maker in the second part.
 
 ### References
-[Algebraic Data Type](https://en.wikipedia.org/wiki/Algebraic_data_type)
+- [Algebraic Data Type](https://en.wikipedia.org/wiki/Algebraic_data_type)
