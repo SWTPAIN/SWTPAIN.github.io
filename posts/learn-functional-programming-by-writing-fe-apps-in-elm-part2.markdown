@@ -18,7 +18,7 @@ git checkout v0.0.2
 
 ## New Folder Structure
 ```elm
--- new folder strucutre
+-- new folder structure
 -- |- elm
 --     |- Main.elm
 --     |- Model
