@@ -225,6 +225,12 @@ pre code {
   text-align: left;
 }
 
+.disqus__block {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px 40px
+}
+
 .article__infoContainer {
   background-color: #f3f3f3;
 }

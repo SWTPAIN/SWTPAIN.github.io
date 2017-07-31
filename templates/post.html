@@ -10,4 +10,8 @@
   <div class="article__content">
     $body$
   </div>
+  $if(disqus)$
+  <hr>
+  $partial("templates/disqus.html")$
+  $endif$
 </article>

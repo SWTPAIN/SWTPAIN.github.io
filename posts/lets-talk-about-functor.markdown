@@ -3,6 +3,7 @@ title: Let's talk functors in Javascript.
 date: 2017-07-16
 preview_image: /images/pipe.jpeg
 isIndex: False
+disqus: True
 ---
 
 This article is targeted for any Javascript developer to get a brief understanding in functor.
