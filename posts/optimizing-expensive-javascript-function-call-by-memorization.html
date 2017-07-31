@@ -67,11 +67,13 @@
       </div>
     </header>
     <article>
-  <div class="article__info">
-    <p class="article__title">
-       Optimizing Expensive Javascript Function Application by Memorization
-    </p>
-    <time class="article__date">March  2, 2016</time>
+  <div class="article__infoContainer">
+    <div class="article__info">
+      <p class="article__title">
+         Optimizing Expensive Javascript Function Application by Memorization
+      </p>
+      <time class="article__date">March  2, 2016</time>
+    </div>
   </div>
   <div class="article__content">
     <p>There will be some occasion that you have some function that takes long processing time. And if the function is pure (no side-effect), we can use a simple technique called memoization to speed it up. The rational is basically creating a cache lookup table mapping arguments to result in order to avoid repeating the calculation of results for previously processed inputs.</p>
@@ -159,6 +161,22 @@
 )<span class="op">;</span></code></pre></div>
 <p>One of the use case in web application will be like some complex form validation. Please note that the above function heavily using closure in javascript. If you are not familiar with closure, you might want to have a look at the post I previously written <a href="understanding-javascript-closure.html">here</a>.</p>
   </div>
+  
+  <hr>
+  <div class="disqus__block">
+  <div id="disqus_thread"></div>
+  <script>
+  (function() { // DON'T EDIT BELOW THIS LINE
+  var d = document, s = d.createElement('script');
+  s.src = 'https://swtpain.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', +new Date());
+  (d.head || d.body).appendChild(s);
+  })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+  
 </article>
 
     <script>
@@ -170,5 +188,6 @@
       ga('create', 'UA-102897942-1', 'auto');
       ga('send', 'pageview');
 
-    </script>    
+    </script>
+    <script id="dsq-count-scr" src="//swtpain.disqus.com/count.js" async></script>
 </html>

@@ -67,11 +67,13 @@
       </div>
     </header>
     <article>
-  <div class="article__info">
-    <p class="article__title">
-       Understanding Javascript Closure
-    </p>
-    <time class="article__date">August 14, 2015</time>
+  <div class="article__infoContainer">
+    <div class="article__info">
+      <p class="article__title">
+         Understanding Javascript Closure
+      </p>
+      <time class="article__date">August 14, 2015</time>
+    </div>
   </div>
   <div class="article__content">
     <p>Before talking about closures in Javascript, it is essential to understand Execution Context, Lexical Scope and Variables Environment first.</p>
@@ -131,6 +133,22 @@
 <span class="kw">var</span> <span class="at">add5</span>(<span class="dv">10</span>) <span class="co">//return 15</span></code></pre></div>
 <p>Learning Closure is a key to master in javascript. It helps you write better small composable function and understand some design patterns like Module Pattern which provider both private and public encapsulation.</p>
   </div>
+  
+  <hr>
+  <div class="disqus__block">
+  <div id="disqus_thread"></div>
+  <script>
+  (function() { // DON'T EDIT BELOW THIS LINE
+  var d = document, s = d.createElement('script');
+  s.src = 'https://swtpain.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', +new Date());
+  (d.head || d.body).appendChild(s);
+  })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+  
 </article>
 
     <script>
@@ -142,5 +160,6 @@
       ga('create', 'UA-102897942-1', 'auto');
       ga('send', 'pageview');
 
-    </script>    
+    </script>
+    <script id="dsq-count-scr" src="//swtpain.disqus.com/count.js" async></script>
 </html>

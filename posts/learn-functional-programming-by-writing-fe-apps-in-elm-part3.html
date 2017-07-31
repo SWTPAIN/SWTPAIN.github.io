@@ -67,15 +67,17 @@
       </div>
     </header>
     <article>
-  <div class="article__info">
-    <p class="article__title">
-       Learn functional programming by writing FE apps in Elm (pt.3)
-    </p>
-    <time class="article__date">July 30, 2017</time>
+  <div class="article__infoContainer">
+    <div class="article__info">
+      <p class="article__title">
+         Learn functional programming by writing FE apps in Elm (pt.3)
+      </p>
+      <time class="article__date">July 30, 2017</time>
+    </div>
   </div>
   <div class="article__content">
     <h2 id="quizwizard-quiz-list">QuizWizard &amp; Quiz List</h2>
-<p>In part 3, we will persist our quiz created in firebase and we will add navigation to the App. So you can send the link of the quiz to let other to do it. You can play around with it <a href="swtpain.github.io/quiz-maker/">here</a></p>
+<p>In part 3, we will persist our quiz created in firebase and we will add navigation to the App. So you can send the link of the quiz to let other to do it. You can play around with it <a href="http://swtpain.github.io/quiz-maker/">here</a>.</p>
 <div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">git</span> clone git@github.com:SWTPAIN/quiz-maker.git
 <span class="fu">git</span> checkout v0.0.3</code></pre></div>
 <p><br /></p>
@@ -195,6 +197,22 @@ view ({ quizzes, route } as model) =
 <p>So this is a very short part in tutorial but I do recommend you to check out the source code.</p>
 <p>In the part 4, we will see we add random shuffling for our answer instead of putting the correct answer in the first one. This will be interesting because random number is intuitively not pure but its not referential transparent. Lets talk about it in the next part.</p>
   </div>
+  
+  <hr>
+  <div class="disqus__block">
+  <div id="disqus_thread"></div>
+  <script>
+  (function() { // DON'T EDIT BELOW THIS LINE
+  var d = document, s = d.createElement('script');
+  s.src = 'https://swtpain.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', +new Date());
+  (d.head || d.body).appendChild(s);
+  })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+  
 </article>
 
     <script>
@@ -206,5 +224,6 @@ view ({ quizzes, route } as model) =
       ga('create', 'UA-102897942-1', 'auto');
       ga('send', 'pageview');
 
-    </script>    
+    </script>
+    <script id="dsq-count-scr" src="//swtpain.disqus.com/count.js" async></script>
 </html>
