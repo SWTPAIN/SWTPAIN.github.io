@@ -7,7 +7,7 @@ isIndex: False
 
 
 ## QuizWizard & Quiz List
-In part 3, we will persist our quiz created in firebase and we will add navigation to the App. So you can send the link of the quiz to let other to do it. You can play around with it [here](swtpain.github.io/quiz-maker/)
+In part 3, we will persist our quiz created in firebase and we will add navigation to the App. So you can send the link of the quiz to let other to do it. You can play around with it [here](http://swtpain.github.io/quiz-maker/).
 
 ```bash
 git clone git@github.com:SWTPAIN/quiz-maker.git

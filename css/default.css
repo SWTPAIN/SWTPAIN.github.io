@@ -38,6 +38,7 @@ body {
   background-color: #FFFFFF;;
   font-family: 'Lora', georgia, serif;
   color:#302F2F;
+  line-height: 30px;
 }
 
 hr {
@@ -134,7 +135,7 @@ pre code {
 
 .header__title {
   color: #EEEEEE;
-  font-size: 2em;
+  font-size: 30px;
   padding-bottom: 20px;
 }
 
@@ -224,15 +225,19 @@ pre code {
   text-align: left;
 }
 
-.article__info {
+.article__infoContainer {
   background-color: #f3f3f3;
+}
+
+.article__info {
   display: flex;
   justify-content: center;
   padding-top: 50px;
   padding-bottom: 50px;
   flex-direction: column;
-  padding-left: 2em;
-  padding-right: 2em;
+  max-width: 800px;
+  margin: auto;
+  padding: 0px 20px;
 }
 
 .article__title {
@@ -242,12 +247,15 @@ pre code {
 
 .article__date {
   font-size: 13px;
+  max-width: 800px;
+  /*margin: 0 auto;*/
+  text-align: right;
 }
 
 .article__content {
-  padding-top: 40px;
-  padding-left: 2em;
-  padding-right: 2em;
+  max-width: 800px;
+  margin: auto;
+  padding: 40px 20px;
 }
 
 @media (max-width : 768px) {
