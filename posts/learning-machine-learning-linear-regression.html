@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta property="og:site_name" content="KaFai Choi">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Learning Machine Learning - Linear Regression">
+    <meta property="og:image" content>
+    <meta property="og:url" content="https://swtpain.github.io/posts/learning-machine-learning-linear-regression.html">
+    <meta property="og:description" content="Learning Machine Learning - Linear Regression">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="KaFai Choi">
+    <meta name="description" content="Learning Machine Learning - Linear Regression">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="../css/default.css">
+    <link rel="stylesheet" type="text/css" href="../css/pandoc.css">
+    <link rel="alternate" type="application/rss+xml" href="../rss.xml" title="RSS">
+    <script>try{Typekit.load({ async: true });}catch(e){}</script>
+    <script type="text/javascript" src="https://cdn.rawgit.com/mathjax/MathJax/2.7.1/MathJax.js"></script>
+    <title>Learning Machine Learning - Linear Regression</title>
+  </head>
+  <body>
+    <header class="header">
+      <div id="headerContent" class="header__content">
+        <span class="header__title">
+          <a href="../">Y = λf.(λx.f(xx))(λx.f(xx))</a>
+        </span>
+        <div class="header__links">
+          <a id="about-link" class="header__link" title="About">
+            <div>
+              <i class="fa fa-user nav-icon"></i>
+            </div>
+          </a>
+          <a target="_blank" class="header__link" href="https://github.com/swtpain" title="Linkedin">
+            <div>
+              <i class="fa fa-github nav-icon"></i>
+            </div>
+          </a>
+          <a target="_blank" class="header__link" href="https://www.linkedin.com/in/kafaic/" title="Github">
+            <div>
+              <i class="fa fa-linkedin nav-icon"></i>
+            </div>
+          </a>
+          <a target="_blank" class="header__link" href="https://www.facebook.com/meatfree.muscle.hk/" title="Facebook">
+            <div>
+              <i class="fa fa-facebook nav-icon"></i>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="header__aboutme" id="aboutme">
+        <div class="header_aboutme-detail">
+          <p>
+            I am a software engineer, a fearless traveller and a passionate vegan weightlifter.
+          </p>
+          <p>
+            I had been working in difference startup from software consultant to startup and big online media. I had done Ruby on Rails, Phoenix(Elixir), Scala, NodeJS, AngularJS, ReactJS, ReactNative and Elm in these 3 years.
+          </p>
+          <p>
+            I now focus on learning function programming, distributed system, deep learning and blockchain technology.
+          </p>
+          <p>
+            This blog will be my personal notes mainly about technical things and hopefully someone can find them useful.
+          </p>
+        </div>
+      </div>
+    </header>
+    <article>
+  <div class="article__infoContainer">
+    <div class="article__info">
+      <p class="article__title">
+         Learning Machine Learning - Linear Regression
+      </p>
+      <time class="article__date">August  3, 2017</time>
+    </div>
+  </div>
+  <div class="article__content">
+    <h2 id="introduction">Introduction</h2>
+<p>There are two major categories of Machine Learning which are supervised and unsupervised learning. Linear regression is a very simple but useful supervised learning algorithmn. And we will use this as example and introduce two important thing in machine learning, <strong>cost function</strong> and <strong>gradient descent</strong>.</p>
+<p>It’s recommend to clone or see my jupyter notebookr result while reading this article. <a href="https://github.com/SWTPAIN/linear-regression-intro">here</a></p>
+<h3 id="linear-regression">Linear Regression</h3>
+<p>In linear regression, our objective is to find the coefficients to fit best input and output in a linear function. The most intuitive example is drawing a single line in a x-y plane where x is input and y is the output. The ideal case will be all data points lies in the straight line.</p>
+<pre><code>Multiple Linear Regression
+y = theta_0 + theta_1 * x1 + theta_2 * x2 + … + theta_n * xn</code></pre>
+<p>In this example, we will work on a example to predict housing price and we will use two variables(apartment area and bedrooms count) as a simplest example of multiple linear regression.</p>
+<h3 id="feature-normalization">Feature Normalization</h3>
+<p>Before we start digging into regression, it’s important to do feature normalization especially when we are using gradient descent. Otherwise, it can significant decrease the converging rate or even make it diverging.</p>
+<pre><code>x' = (x - mean_of_x) / (standard_deviration_of_x)</code></pre>
+<p><br /></p>
+<h3 id="cost-function">Cost Function</h3>
+<p>We need to have a function to calculate how well our linear function fit the data and it will be simply mean squared error. So our objective is to minimize the cost by finding the optimal theta.</p>
+<pre><code>J(theta) = 1/(2m) * sum_(i=1)^m [ h_theta(x^i) - y^i ]^2</code></pre>
+<p><br /></p>
+<h3 id="gradient-descent">Gradient Descent</h3>
+<p>Now we have cost function, we will use gradient descent to slowly adjust our theta until our cost is very low. The gradient is a rate of change of cost function so we will calculate the gradient and minus theta with the gradient in each iteration. For each step of gradient descent, our theta will become closer to the optimal values that lead to the lowest cost function <strong>J(theta)</strong>.</p>
+<p><br /></p>
+<h3 id="monitor-convergence">Monitor convergence</h3>
+<p>While we are doing gradient descent, it’s usually take some time to finish the program especially if we have lots of training data or number of iteration is very high. So, it’s suggested that we print our cost for each iteration and if it is not going down then it implies it’s not converging and we should probably pause the program and check if there is any bug in it.</p>
+<p><br /></p>
+<h3 id="references">References</h3>
+<ul>
+<li><a href="https://www.coursera.org/learn/machine-learning/lecture/kCvQc/gradient-descent-for-linear-regression">Gradient Descent For Linear Regression in Coursera</a></li>
+<li><a href="https://www.youtube.com/watch?v=uwwWVAgJBcM">How to Do Linear Regression the Right Way</a></li>
+</ul>
+  </div>
+  
+  <hr>
+  <div class="disqus__block">
+  <div id="disqus_thread"></div>
+  <script>
+  (function() { // DON'T EDIT BELOW THIS LINE
+  var d = document, s = d.createElement('script');
+  s.src = 'https://swtpain.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', +new Date());
+  (d.head || d.body).appendChild(s);
+  })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+  
+</article>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-102897942-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+    <script id="dsq-count-scr" src="//swtpain.disqus.com/count.js" async></script>
+</html>
