@@ -39,6 +39,8 @@ body {
   font-family: 'Lora', georgia, serif;
   color:#302F2F;
   line-height: 30px;
+  max-width: 800px;
+  margin: auto;
 }
 
 hr {
@@ -117,57 +119,35 @@ pre code {
   white-space: pre;
 }
 
+.introduction {
+  padding-left: 20px;
+  padding-right: 20px;
+}
 
-/* BEM styling*/
 .header {
-  background-color: #FFFFFF;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 500px;
-  /*height: inherit;*/
-  background-size: cover;
-  background-position: center;
-  background-image:url("../images/background.jpg");
-  background-color: black;
 }
 
-.header__title {
-  color: #EEEEEE;
-  font-size: 30px;
-  padding-bottom: 20px;
-}
-
-.header__aboutme {
-  transition: opacity 0.5s ease-in-out;
-  /*display: none;*/
-  opacity: 0;
-}
-
-.header__aboutme.show {
+.navigation {
+  padding-top: .15em;
+  padding-bottom: .15em;
   display: block;
-  opacity: 1;
+  position: relative;
 }
 
-.header_aboutme-detail {
-  font-size: 0.8em;
-  padding-left: 2em;
-  padding-right: 2em;
-  color: #EEEEEE;
+.navigation__list {
+  list-style-type: none;
 }
 
-.header__content {
-  transition: all 400ms ease-in;
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  top: 200px;
-  z-index: 100;
+.navigation__item {
+
 }
 
-.header__content.up {
-  top: 40px;
+.profile-image {
+  float: left;
+  width: 80px;
+  height: 80px;
+  margin-right: 1em;
+  border-radius: 80px;
 }
 
 .header__links {
@@ -178,7 +158,6 @@ pre code {
 .header__link {
   flex: 1;
   text-align: center;
-  /*font-size: 1em !important;*/
 }
 
 .post-list__container {
@@ -195,34 +174,26 @@ pre code {
    width: 100%;
 }
 
-.post-list__item {
-  width: 32%;
-  display: inline-flex;
-  margin-left: 0.5%;
-  margin-right: 0.5%;
-  margin-top: 0.5%;
+.post-list__title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 32px;
 }
 
 .post-item {
-  background-size: cover;
-  text-align: right;
-  box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, .2);
+  padding: 1em 0 1em;
+  border-top: 1px dotted #888;
   width: 100%;
-  background-position: center center;
-}
-
-.post-item__text-container {
-  padding-top: 100%;
-  margin-bottom: 3%;
 }
 
 .post-item__text {
-  background-color: rgba(47, 55, 60, .2);
-  display: inline;
-  box-decoration-break: clone;
   font-family: 'Oswald', sans-serif;
   font-size: 28px;
   text-align: left;
+}
+
+.post-item__date {
+  font-size: 20px;
+  text-align: right;
 }
 
 .disqus__block {
@@ -281,5 +252,13 @@ pre code {
     margin-left: 0.5%;
     margin-right: 0.5%;
     margin-top: 0.5%;
+  }
+
+  .post-item__text {
+    font-size: 18px;
+  }
+
+  .post-item__date {
+    font-size: 12px;
   }
 }

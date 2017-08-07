@@ -1,21 +1,22 @@
 <div class="post-list__container">
+  <p class="post-list__title">
+    Articles
+  </p>
   <div class="post-list">
       $for(posts)$
-          <div
-            class="post-list__item"
+          <a
+            href="$url$"
+            class="post-item"
           >
-            <a
-              href="$url$"
-              class="post-item"
-              style='background-image: url($if(preview_image)$$preview_image$$else$/images/post-default.jpg$endif$);'
-            >
-              <div class="post-item__text-container">
-                <div class="post-item__text">
-                  $title$
-                </div>
+            <div class="post-item__text-container">
+              <div class="post-item__text">
+                $title$
               </div>
-            </a>
-          </div>
+              <div class="post-item__date">
+                $date$
+              </div>
+            </div>
+          </a>
       $endfor$
   </div>
 </div>

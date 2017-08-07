@@ -1,8 +1,6 @@
 ---
 title: Start learning machine learning with jupyter notebook and Anaconda
 date: 2017-08-02
-preview_image: /images/iphone-desk-laptop-notebook.jpg
-isIndex: False
 disqus: True
 ---
 

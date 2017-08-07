@@ -1,8 +1,6 @@
 ---
 title: Understanding Javascript Closure
 date: 2015-08-14
-preview_image: /images/traffic-road.jpeg
-isIndex: False
 disqus: True
 ---
 

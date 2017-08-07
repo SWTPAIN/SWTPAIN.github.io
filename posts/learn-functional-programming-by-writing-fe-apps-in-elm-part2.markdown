@@ -1,8 +1,6 @@
 ---
 title: Learn functional programming by writing FE apps in Elm (pt.2)
 date: 2017-07-23
-preview_image: /images/juice-market.jpeg
-isIndex: False
 disqus: True
 ---
 

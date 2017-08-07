@@ -1,8 +1,6 @@
 ---
 title: Let's talk functors in Javascript.
 date: 2017-07-16
-preview_image: /images/pipe.jpeg
-isIndex: False
 disqus: True
 ---
 

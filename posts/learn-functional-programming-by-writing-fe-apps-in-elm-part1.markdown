@@ -1,8 +1,6 @@
 ---
 title: Learn functional programming by writing FE apps in Elm (pt.1)
 date: 2017-07-20
-preview_image: /images/coffee-beginning.jpeg
-isIndex: False
 disqus: True
 ---
 

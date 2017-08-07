@@ -1,8 +1,6 @@
 ---
 title: Learn functional programming by writing FE apps in Elm (pt.3)
 date: 2017-07-30
-preview_image: /images/greece-ocean.jpeg
-isIndex: False
 disqus: True
 ---
 
