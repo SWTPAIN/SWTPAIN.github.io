@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta property="og:site_name" content="KaFai Choi">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Learn Elixir - Writing a weightlifting tracking server - part 1 - processes">
+    <meta property="og:image" content>
+    <meta property="og:url" content="https://swtpain.github.io/posts/learn-elixir-writing-weightlifting-tracking-server-part-1-process.html">
+    <meta property="og:description" content="Learn Elixir - Writing a weightlifting tracking server - part 1 - processes">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="KaFai Choi">
+    <meta name="description" content="Learn Elixir - Writing a weightlifting tracking server - part 1 - processes">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="../css/default.css">
+    <link rel="stylesheet" type="text/css" href="../css/pandoc.css">
+    <link rel="alternate" type="application/rss+xml" href="../rss.xml" title="RSS">
+    <script>try{Typekit.load({ async: true });}catch(e){}</script>
+    <script type="text/javascript" src="https://cdn.rawgit.com/mathjax/MathJax/2.7.1/MathJax.js"></script>
+    <title>Learn Elixir - Writing a weightlifting tracking server - part 1 - processes</title>
+  </head>
+  <body>
+    <nav class="navigation">
+      <ul class="navigation__list">
+        <li class="navigation__item">
+          <a class="header__link" href="../">
+            Y = λf.(λx.f(xx))(λx.f(xx))
+          </a>
+        </li>
+      </ul>
+    </nav>
+    
+    <article>
+  <div class="article__infoContainer">
+    <div class="article__info">
+      <p class="article__title">
+         Learn Elixir - Writing a weightlifting tracking server - part 1 - processes
+      </p>
+      <time class="article__date">August  8, 2017</time>
+    </div>
+  </div>
+  <div class="article__content">
+    <h2 id="intro">Intro</h2>
+<p>Process to Elixir is like object to Object-oriented programming language. They are the fundamental units of actor concurrency model in Elixir/Erlang. Thanks to Erlang VM, they are much lighter weight than actual OS process and usually take few kb and microseconds and less than 2kb memory to create one.</p>
+<p>In order to learn the concurrency model, I will start writing a toy project, a weightlifting tracking server.</p>
+<h2 id="the-app-server">The App Server</h2>
+<p>We’ll be developing an application server for keep tracking on the workout people done in the gym. We will start building the most naive version by using the most basic pieces, processes.</p>
+<h2 id="stateful-server-processes">Stateful server processes</h2>
+<p>Long running process that respond to various messages. It keep internal state by recursion.</p>
+<h2 id="project-setup">Project Setup</h2>
+<p>Repo is <a href="https://github.com/SWTPAIN/strong-as-fuck">here</a>. To see the source code:</p>
+<pre><code>git clone git@github.com:SWTPAIN/strong-as-fuck.git
+cd strong-as-fuck
+git checkout v0.0.1</code></pre>
+<h2 id="stateful-server-process">Stateful Server Process</h2>
+<p>We basically want to have a long running process that respond to different messages and it has to be stateful because it need to keep the training count.</p>
+<div class="sourceCode"><pre class="sourceCode elixir"><code class="sourceCode elixir"><span class="co"># lib/server.ex</span>
+<span class="kw">defmodule</span> <span class="cn">StrongAsFuck</span><span class="op">.</span><span class="cn">Server</span> <span class="kw">do</span>
+
+  <span class="im">alias</span> <span class="cn">StrongAsFuck</span><span class="op">.</span><span class="cn">RecordBook</span>, <span class="va">as:</span> <span class="cn">RecordBook</span>
+
+  <span class="kw">def</span> start() <span class="kw">do</span>
+    spawn(<span class="op">&amp;</span>init<span class="op">/</span><span class="dv">0</span>)
+  <span class="kw">end</span>
+
+  <span class="kw">def</span> init() <span class="kw">do</span>
+    loop get_initial_state()
+  <span class="kw">end</span>
+
+  <span class="kw">defp</span> loop(state) <span class="kw">do</span>
+    new_state <span class="op">=</span> <span class="kw">receive</span> <span class="kw">do</span>
+      message <span class="op">-&gt;</span>
+        handle_message(state, message)
+    <span class="kw">end</span>
+    loop(new_state)
+  <span class="kw">end</span></code></pre></div>
+<p>We will have a <code>start</code> function which will take a function and run it in a new process. In order to keep the process from exiting, we will use tail recursion. In <code>loop</code> function, we will wait to receive new message and obtain the new state after processing it and apply <code>loop</code> again with the new state.</p>
+<h2 id="message-passing">Message Passing</h2>
+<p>The concurrency model in Elixir/Erlang is called actor model. Actor is a process and they communicate exclusively by sending messages to another and there are no resources shared(which means the message is deeply-copied). Each process will have its own dedicated task.</p>
+<p>In our <code>add_customer</code> function, we send a message by <code>send(server_pid, {:add_customer, gender, self() })</code>. The first argument id the pid(Process Id) returned by <code>start</code> function and second is the message content. Note that self is a function that return current process id. We will pass it as message content so the head count server can send response back to the caller process.</p>
+<p>So in our application, we have a function <code>handle_message</code> to handle new message in mailbox. Note that <code>send caller, :ok</code> and <code>send caller, {:error, message}</code> is to send response back the caller process. The trick is to call <code>receive do response -&gt; response end</code> in our interface function and this will block the caller process to wait until message is sent back to them.</p>
+<div class="sourceCode"><pre class="sourceCode elixir"><code class="sourceCode elixir"><span class="co"># lib/server.ex</span>
+<span class="kw">def</span> add_training_record(server_pid, movement) <span class="kw">do</span>
+  send(server_pid, {<span class="va">:add_training_record</span>, movement, self() })
+  <span class="kw">receive</span> <span class="kw">do</span>
+    response <span class="op">-&gt;</span>
+      response
+  <span class="kw">end</span>
+<span class="kw">end</span>
+
+<span class="kw">defp</span> handle_message(state, message) <span class="kw">do</span>
+  <span class="kw">case</span> message <span class="kw">do</span>
+    {<span class="va">:add_training_record</span>, movement, caller} <span class="op">-&gt;</span>
+      <span class="kw">case</span> <span class="cn">RecordBook</span><span class="op">.</span>add_record(state, movement) <span class="kw">do</span>
+        {<span class="va">:ok</span>, new_state} <span class="op">-&gt;</span>
+          send caller, <span class="va">:ok</span>
+          new_state
+        {<span class="va">:error</span>, message} <span class="op">-&gt;</span>
+          send caller, {<span class="va">:error</span>, message}
+          state
+      <span class="kw">end</span>
+    {<span class="va">:remove_training_record</span>, movement, caller} <span class="op">-&gt;</span>
+      <span class="kw">case</span> <span class="cn">RecordBook</span><span class="op">.</span>remove_record(state, movement) <span class="kw">do</span>
+        {<span class="va">:ok</span>, new_state} <span class="op">-&gt;</span>
+          send caller, <span class="va">:ok</span>
+          new_state
+        {<span class="va">:error</span>, message} <span class="op">-&gt;</span>
+          send caller, {<span class="va">:error</span>, message}
+          state
+      <span class="kw">end</span>
+    {<span class="va">:get_stat</span>, caller} <span class="op">-&gt;</span>
+      send caller, {<span class="va">:ok</span>, <span class="cn">RecordBook</span><span class="op">.</span>get_stat(state)}
+      state
+    _ <span class="op">-&gt;</span>
+      state
+  <span class="kw">end</span>
+<span class="kw">end</span></code></pre></div>
+<h3 id="recordbook-struct">RecordBook Struct</h3>
+<p>We model our application state as a Struct. Struct is basically Map under the food but providing a strict data structure. One advantage is that if we try to access non-existing property on a struct, we will receive error in compile time.</p>
+<div class="sourceCode"><pre class="sourceCode elixir"><code class="sourceCode elixir"><span class="co"># lib/record_book.ex</span>
+<span class="kw">defmodule</span> <span class="cn">StrongAsFuck</span><span class="op">.</span><span class="cn">RecordBook</span> <span class="kw">do</span>
+
+  <span class="ot">@movements</span> <span class="op">~</span>w(pullup pushup)a
+  <span class="kw">defstruct</span> <span class="va">pullup:</span> <span class="dv">0</span>, <span class="va">pushup:</span> <span class="dv">0</span>
+
+  <span class="kw">def</span> add_record(
+    book,
+    movement
+  ) <span class="kw">when</span> movement <span class="kw">in</span> <span class="ot">@movements</span> <span class="kw">do</span>
+    book
+    <span class="op">|&gt;</span> <span class="cn">Map</span><span class="op">.</span>put(movement, <span class="cn">Map</span><span class="op">.</span>get(book, movement) <span class="op">+</span> <span class="dv">1</span>)
+    <span class="op">|&gt;</span> validate
+  <span class="kw">end</span>
+
+  <span class="op">....</span></code></pre></div>
+<h2 id="play-with-it-in-iex">Play with it in Iex</h2>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">iex</span> -S mix
+<span class="ex">server_pid</span> = StrongAsFuck.Server.start()
+<span class="co">#PID&lt;0.105.0&gt;</span>
+<span class="ex">StrongAsFuck.Server.add_training_record</span>(
+  <span class="ex">server_pid</span>, :pullup
+)
+<span class="co"># :ok</span>
+<span class="ex">StrongAsFuck.Server.add_training_record</span>(
+  <span class="ex">server_pid</span>, :pushup
+)
+<span class="co"># :ok</span>
+<span class="ex">StrongAsFuck.Server.add_training_record</span>(
+  <span class="ex">server_pid</span>, :pushup
+)
+<span class="co"># :ok</span>
+<span class="ex">StrongAsFuck.Server.get_stat</span>(server_pid)
+{:<span class="ex">ok</span>, %{pullup: 1, pushup: 2}}</code></pre></div>
+<p>Now our extreme naive stateful head count server is complete. In the next part, we will improve it by using registering process with name instead of pid, error handling.</p>
+  </div>
+  
+  <hr>
+  <div class="disqus__block">
+  <div id="disqus_thread"></div>
+  <script>
+  (function() { // DON'T EDIT BELOW THIS LINE
+  var d = document, s = d.createElement('script');
+  s.src = 'https://swtpain.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', +new Date());
+  (d.head || d.body).appendChild(s);
+  })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+  
+</article>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-102897942-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+    <script id="dsq-count-scr" src="//swtpain.disqus.com/count.js" async></script>
+</html>

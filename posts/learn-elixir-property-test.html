@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta property="og:site_name" content="KaFai Choi">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Learn Elixir - Property Test">
+    <meta property="og:image" content>
+    <meta property="og:url" content="https://swtpain.github.io/posts/learn-elixir-property-test.html">
+    <meta property="og:description" content="Learn Elixir - Property Test">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="KaFai Choi">
+    <meta name="description" content="Learn Elixir - Property Test">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="../css/default.css">
+    <link rel="stylesheet" type="text/css" href="../css/pandoc.css">
+    <link rel="alternate" type="application/rss+xml" href="../rss.xml" title="RSS">
+    <script>try{Typekit.load({ async: true });}catch(e){}</script>
+    <script type="text/javascript" src="https://cdn.rawgit.com/mathjax/MathJax/2.7.1/MathJax.js"></script>
+    <title>Learn Elixir - Property Test</title>
+  </head>
+  <body>
+    <nav class="navigation">
+      <ul class="navigation__list">
+        <li class="navigation__item">
+          <a class="header__link" href="../">
+            Y = λf.(λx.f(xx))(λx.f(xx))
+          </a>
+        </li>
+      </ul>
+    </nav>
+    
+    <article>
+  <div class="article__infoContainer">
+    <div class="article__info">
+      <p class="article__title">
+         Learn Elixir - Property Test
+      </p>
+      <time class="article__date">August  6, 2017</time>
+    </div>
+  </div>
+  <div class="article__content">
+    <h2 id="intro">Intro</h2>
+<p>Elixir is an emerging functional programming language which is very suitable for using it in writing distributed system(Whatsapp ,Wooga, Riak) because powerful Erlang VM and OTP framework.</p>
+<p>As a Elixir beginner, I would like to start series of learning Elixir. So the first one is property testing.</p>
+<h3 id="property-testing">Property Testing</h3>
+<p>Tests allow us to state an expectation and verify that the result of our part of program is as we expected. Most of engineers must be familiar with unit testing. In unit testing, we test the smallest independent unit(usually function) of the application. However, unit testing cannot ensure that our test have met our requirement unless we have written a lot of edge cases.</p>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="co"># spec/reverse_spec.rb</span>
+describe <span class="st">&quot;reverse&quot;</span> <span class="kw">do</span>
+  it <span class="st">'return original if reverse twice with argument [1,2,3]'</span> <span class="kw">do</span>
+    expect(reverse()).to eq(<span class="dv">2</span>)
+    expect(reverse(reverse([<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>]))).to eq([<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>])
+  <span class="kw">end</span>
+
+  it <span class="st">'return original if reverse twice with argument [9, 2, 3, 1]'</span> <span class="kw">do</span>
+    expect(reverse()).to eq(<span class="dv">2</span>)
+    expect(reverse(reverse([<span class="dv">9</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">1</span>]))).to eq([<span class="dv">9</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">1</span>])
+  <span class="kw">end</span>
+<span class="kw">end</span>
+
+<span class="co"># We will probably stop here but do we cover enough relevant case?</span></code></pre></div>
+<p>In property testing, the idea is that the test framework will help us randomly generating different argument and run our test . This is particularly common in language having good type system and immutable data structure.</p>
+<h3 id="using-excheck">Using Excheck</h3>
+<p>The repo is <a href="https://github.com/SWTPAIN/learning_property_test">here</a> if you are interested in looking at the code. ```</p>
+<div class="sourceCode"><pre class="sourceCode elixir"><code class="sourceCode elixir"><span class="co"># add quixir to dpes dependencies</span>
+<span class="kw">defp</span> deps <span class="kw">do</span>
+  [
+    {<span class="va">:excheck</span>, <span class="st">&quot;~&gt; 0.5&quot;</span>, <span class="va">only:</span> <span class="va">:test</span>},
+    {<span class="va">:triq</span>, <span class="va">github:</span> <span class="st">&quot;triqng/triq&quot;</span>, <span class="va">only:</span> <span class="va">:test</span>}
+  ]
+<span class="kw">end</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="co"># install new dependencies</span>
+<span class="ex">mix</span> deps.get</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode elixir"><code class="sourceCode elixir"><span class="co"># test/learning_property_test.exs</span>
+<span class="kw">defmodule</span> <span class="cn">LearningPropertyTestTest</span> <span class="kw">do</span>
+  <span class="im">use</span> <span class="cn">ExUnit</span><span class="op">.</span><span class="cn">Case</span>, <span class="va">async:</span> <span class="cn">false</span>
+  <span class="im">use</span> <span class="cn">ExCheck</span>
+
+  property <span class="st">&quot;x + 1 is always greater than x&quot;</span> <span class="kw">do</span>
+    for_all x <span class="kw">in</span> int(), <span class="kw">do</span>: x <span class="op">+</span> <span class="dv">1</span> <span class="op">&gt;=</span> x
+  <span class="kw">end</span>
+
+  property <span class="st">&quot;x * x is always greater than x&quot;</span> <span class="kw">do</span>
+    for_all x <span class="kw">in</span> int(), <span class="kw">do</span>: x <span class="op">*</span> x <span class="op">&gt;</span> x
+  <span class="kw">end</span>
+
+<span class="kw">end</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">mix</span> test
+
+<span class="co"># LearningPropertyTestTest</span>
+<span class="co">#   * test x * x is always greater than x_property (8.3ms)</span>
+<span class="co"># ....................................................................................................</span>
+<span class="co">#   1) test x * x is always greater than x_property (LearningPropertyTestTest)</span>
+<span class="co">#      test/learning_property_test_test.exs:9</span>
+<span class="co">#      Expected truthy, got false</span>
+<span class="co">#      code: ExCheck.check(prop_x * x is always greater than x(), context[:iterations])</span>
+<span class="co">#      stacktrace:</span>
+<span class="co">#        test/learning_property_test_test.exs:9: (test)</span>
+<span class="co">#</span>
+<span class="co">#   * test x + 1 is always greater than x_property (2.3ms)</span>
+<span class="co">#</span>
+<span class="co"># Finished in 0.06 seconds</span>
+<span class="co"># 101 tests, 1 failure</span></code></pre></div>
+<p>The test framework will randomly generate 500 different integers to ensure this property is not broken.</p>
+<p>For second test, ExCheck reports that the property failed. There is no counter example for the failing case. However the community is working on <a href="https://github.com/parroty/excheck/issues/36">it</a></p>
+<p>Now let’s consider a simple Morse encoding module. There are only two public function which are <code>&amp;encode/1</code> and <code>&amp;decode/1</code>. So if the letters are valid, it should return the same letters after encode and decode it. It is easy to write the test for it as follows:</p>
+<div class="sourceCode"><pre class="sourceCode elixir"><code class="sourceCode elixir">lib<span class="op">/</span>morse_test<span class="op">.</span>exs
+<span class="kw">defmodule</span> <span class="cn">MorseTest</span> <span class="kw">do</span>
+  <span class="im">use</span> <span class="cn">ExUnit</span><span class="op">.</span><span class="cn">Case</span>, <span class="va">async:</span> <span class="cn">false</span>
+  <span class="im">use</span> <span class="cn">ExCheck</span>
+
+  <span class="ot">@valid_letters</span>  <span class="cn">Morse</span><span class="op">.</span>letter_to_morse <span class="op">|&gt;</span> <span class="cn">Map</span><span class="op">.</span>keys
+  <span class="ot">@valid_morses</span>  <span class="cn">Morse</span><span class="op">.</span>letter_to_morse <span class="op">|&gt;</span> <span class="cn">Map</span><span class="op">.</span>values
+
+
+  property <span class="st">&quot;encode and decode return the same string if string only contain valid letter&quot;</span> <span class="kw">do</span>
+    for_all letters <span class="kw">in</span> list(elements(<span class="ot">@valid_letters</span>)) <span class="kw">do</span>
+      sentence <span class="op">=</span> letters <span class="op">|&gt;</span> <span class="cn">Enum</span><span class="op">.</span>join
+      sentence <span class="op">|&gt;</span> <span class="cn">Morse</span><span class="op">.</span>encode() <span class="op">|&gt;</span> elem(<span class="dv">1</span>) <span class="op">|&gt;</span> <span class="cn">Morse</span><span class="op">.</span>decode() <span class="op">|&gt;</span> elem(<span class="dv">1</span>) <span class="op">==</span> sentence
+    <span class="kw">end</span>
+  <span class="kw">end</span>
+
+  property <span class="st">&quot;decode and encode return the same morses if string only contain valid morses&quot;</span> <span class="kw">do</span>
+    for_all morses <span class="kw">in</span> list(elements(<span class="ot">@valid_morses</span>)) <span class="kw">do</span>
+      morses_sentence <span class="op">=</span> morses <span class="op">|&gt;</span> <span class="cn">Enum</span><span class="op">.</span>join(<span class="st">&quot; &quot;</span>)
+      morses_sentence <span class="op">|&gt;</span> <span class="cn">Morse</span><span class="op">.</span>decode() <span class="op">|&gt;</span> elem(<span class="dv">1</span>) <span class="op">|&gt;</span> <span class="cn">Morse</span><span class="op">.</span>encode() <span class="op">|&gt;</span> elem(<span class="dv">1</span>) <span class="op">==</span> morses_sentence
+    <span class="kw">end</span>
+  <span class="kw">end</span>
+
+<span class="kw">end</span></code></pre></div>
+<h3 id="conclusion">Conclusion</h3>
+<p>The idea of property testing is to think clearly what property our function should hold and let the test framework to help us generate hundreds of test cases to cover edge cases as much as possible. Even though the property test framework in Elixir is still in very beginning stage, I do think it’s good enough to get started with it in any nontrivial project.</p>
+  </div>
+  
+  <hr>
+  <div class="disqus__block">
+  <div id="disqus_thread"></div>
+  <script>
+  (function() { // DON'T EDIT BELOW THIS LINE
+  var d = document, s = d.createElement('script');
+  s.src = 'https://swtpain.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', +new Date());
+  (d.head || d.body).appendChild(s);
+  })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+  
+</article>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-102897942-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+    <script id="dsq-count-scr" src="//swtpain.disqus.com/count.js" async></script>
+</html>
