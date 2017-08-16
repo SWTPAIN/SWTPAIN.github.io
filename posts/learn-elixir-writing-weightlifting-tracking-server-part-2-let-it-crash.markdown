@@ -266,6 +266,9 @@ curl http://localhost:4000/training_log_books/alice
 # {"username":"alice","logs":[{"weight":"100","rep":"10","movement_name":"snatch"}]}%
 ```
 
+We can easily application process tree by `:observer.start` in iex.
+![erlang process tree](../images/erlang-process.png)
+
 Now our weightlifting tracking server can be accessed through http interface and we have use OTP to make sure our system is responsive and fault-tolerated. The next part will be using `Phoenix` web framework and implement more feature!
 
 ## Reference

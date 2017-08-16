@@ -43,6 +43,10 @@ body {
   margin: auto;
 }
 
+img {
+  width: 100%;
+}
+
 hr {
   border-top-color: rgba(66, 77, 86, 0.8);
 }
