@@ -55,8 +55,9 @@
 <span class="co"># another window</span>
 <span class="ex">npm</span> start <span class="co">#make sure MetaMask is install for your browser</span></code></pre></div>
 <p>Note that I used <a href="https://github.com/trufflesuite/truffle">Truffle</a> to create a react-webpack boilderplate. There are lots of good tutorial about developing dapps in Truffle website. Please check them out.</p>
+<h2 id="tips-gotchas">Tips &amp; Gotchas</h2>
 <p>I will not go through the process because it’s relatively straight-forward and simple application now. Instead, I would like to share some gotchas and hope that could save you some times in your first dapps development.</p>
-<h2 id="return-tuple-instead-of-struct">Return Tuple instead of struct</h2>
+<h3 id="return-tuple-instead-of-struct">Return Tuple instead of struct</h3>
 <p>It’s not possible to return struct from public function. You need to change the function to return tuple which containing the fields that you are interested.</p>
 <pre class="solidity"><code>function getItem(uint itemId)
   public
@@ -66,13 +67,16 @@
 ) {
   .....
 }</code></pre>
-<h2 id="debugging-contracts">Debugging Contracts</h2>
+<h3 id="debugging-contracts">Debugging Contracts</h3>
 <p>First, we need to open a second console with logging <code>truffle develop --log</code> so we can easily see transaction ids when a transaction failure happen.</p>
 <p>Let’s say we try to call a function in a contract but it reverts transaction and throw error. We get the transaction id from log and use <code>debug transtionIdxxxxxxx</code> in <code>truffle console</code>. And then you will enter into an interactive mode where you can step into/over/out to the statement evaluated in EVM.</p>
-<h2 id="reinstall-metamask-everytime-restart-testrpctruffle-console">Reinstall MetaMask everytime restart testrpc/truffle console</h2>
+<h3 id="reinstall-metamask-everytime-restart-testrpctruffle-console">Reinstall MetaMask everytime restart testrpc/truffle console</h3>
 <p>It’s a bug casued by nonce calucation. <a href="https://github.com/MetaMask/metamask-extension/issues/1999">Bug here</a></p>
 <h2 id="suggested-materials">Suggested Materials</h2>
-<p><a href="https://cryptozombies.io/">Crypto Zombies</a> - an interactive fun game to learn solidity <a href="https://github.com/axiomzen/cryptokitties-bounty">Crypto Kitties</a> - There are relatively complicated contracts which you can learn about inheritence, data structure, modifier and code testing.</p>
+<ul>
+<li><a href="https://cryptozombies.io/">Crypto Zombies</a> an interactive fun game to learn solidity</li>
+<li><a href="https://github.com/axiomzen/cryptokitties-bounty">Crypto Kitties</a> there are relatively complicated contracts which you can learn about inheritence, data structure, modifier and code testing.</li>
+</ul>
   </div>
   
   <hr>
