@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta property="og:site_name" content="KaFai Choi">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Learn Solidity (pt.1)">
+    <meta property="og:image" content>
+    <meta property="og:url" content="https://swtpain.github.io/posts/learn-solidity-pt-1.html">
+    <meta property="og:description" content="Learn Solidity (pt.1)">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="KaFai Choi">
+    <meta name="description" content="Learn Solidity (pt.1)">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="../css/default.css">
+    <link rel="stylesheet" type="text/css" href="../css/pandoc.css">
+    <link rel="alternate" type="application/rss+xml" href="../rss.xml" title="RSS">
+    <script>try{Typekit.load({ async: true });}catch(e){}</script>
+    <script type="text/javascript" src="https://cdn.rawgit.com/mathjax/MathJax/2.7.1/MathJax.js"></script>
+    <title>Learn Solidity (pt.1)</title>
+  </head>
+  <body>
+    <nav class="navigation">
+      <ul class="navigation__list">
+        <li class="navigation__item">
+          <a class="header__link" href="../">
+            Y = λf.(λx.f(xx))(λx.f(xx))
+          </a>
+        </li>
+      </ul>
+    </nav>
+    
+    <article>
+  <div class="article__infoContainer">
+    <div class="article__info">
+      <p class="article__title">
+         Learn Solidity (pt.1)
+      </p>
+      <time class="article__date">January 16, 2018</time>
+    </div>
+  </div>
+  <div class="article__content">
+    <h2 id="motivation">Motivation</h2>
+<p>I have been so interested in blockchain technology recently. However, Dapps development is a very new growing field and it’s not too easy to find good in-depth resources in it so I hope this post can be useful for people like me who just get started in dapps.</p>
+<h2 id="whats-decentralized-apps">What’s decentralized apps?</h2>
+<p>As a developer, we used to build centralized application which means typical server-client model. The server might be distributed across different node but they are essentially from the same central power. As for decentralized applications, instead of having one central power, all nodes are cooperating and the consensus is usually made by proof of work or proof of stake. Data are persisted in blockchain which is usually public.</p>
+<h2 id="freeswap---a-toy-dapps-project-for-swapping-items">FreeSwap - A toy dapps project for swapping items</h2>
+<p>I am building a toy project for people to swapping items. The main purpose is to learn dapps development rather than building a production-ready application.</p>
+<h3 id="project-setup">Project Setup</h3>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">git</span> clone git@github.com:SWTPAIN/freeswap-dapps.git
+<span class="fu">git</span> checkout v0.0.1
+<span class="ex">npm</span> i
+<span class="ex">truffle</span> compile<span class="kw">;</span> <span class="ex">truffle</span> migrate<span class="kw">;</span><span class="ex">truffle</span> develop
+<span class="co"># another window</span>
+<span class="ex">npm</span> start <span class="co">#make sure MetaMask is install for your browser</span></code></pre></div>
+<p>Note that I used <a href="https://github.com/trufflesuite/truffle">Truffle</a> to create a react-webpack boilderplate. There are lots of good tutorial about developing dapps in Truffle website. Please check them out.</p>
+<p>I will not go through the process because it’s relatively straight-forward and simple application now. Instead, I would like to share some gotchas and hope that could save you some times in your first dapps development.</p>
+<h2 id="return-tuple-instead-of-struct">Return Tuple instead of struct</h2>
+<p>It’s not possible to return struct from public function. You need to change the function to return tuple which containing the fields that you are interested.</p>
+<pre class="solidity"><code>function getItem(uint itemId)
+  public
+  view
+  returns (
+  uint _itemId, string name, string description, ItemState state
+) {
+  .....
+}</code></pre>
+<h2 id="debugging-contracts">Debugging Contracts</h2>
+<p>First, we need to open a second console with logging <code>truffle develop --log</code> so we can easily see transaction ids when a transaction failure happen.</p>
+<p>Let’s say we try to call a function in a contract but it reverts transaction and throw error. We get the transaction id from log and use <code>debug transtionIdxxxxxxx</code> in <code>truffle console</code>. And then you will enter into an interactive mode where you can step into/over/out to the statement evaluated in EVM.</p>
+<h2 id="reinstall-metamask-everytime-restart-testrpctruffle-console">Reinstall MetaMask everytime restart testrpc/truffle console</h2>
+<p>It’s a bug casued by nonce calucation. <a href="https://github.com/MetaMask/metamask-extension/issues/1999">Bug here</a></p>
+<h2 id="suggested-materials">Suggested Materials</h2>
+<p><a href="https://cryptozombies.io/">Crypto Zombies</a> - an interactive fun game to learn solidity <a href="https://github.com/axiomzen/cryptokitties-bounty">Crypto Kitties</a> - There are relatively complicated contracts which you can learn about inheritence, data structure, modifier and code testing.</p>
+  </div>
+  
+  <hr>
+  <div class="disqus__block">
+  <div id="disqus_thread"></div>
+  <script>
+  (function() { // DON'T EDIT BELOW THIS LINE
+  var d = document, s = d.createElement('script');
+  s.src = 'https://swtpain.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', +new Date());
+  (d.head || d.body).appendChild(s);
+  })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+  
+</article>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-102897942-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+    <script id="dsq-count-scr" src="//swtpain.disqus.com/count.js" async></script>
+</html>
