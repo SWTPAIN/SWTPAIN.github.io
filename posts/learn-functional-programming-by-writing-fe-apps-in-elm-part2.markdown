@@ -9,7 +9,7 @@ disqus: True
 In part 2, we can create quiz and see list of quizzes in our app. Instead of a walkthrough of coding, it will be highlights and explanations about some key changes we made. It's recommended to read the source code and play around with the apps before reading it.
 
 ```bash
-git clone git@github.com:SWTPAIN/quiz-maker.git
+git clone git@github.com:bruteforcecat/quiz-maker.git
 git checkout v0.0.2
 ```
 

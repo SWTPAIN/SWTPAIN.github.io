@@ -8,10 +8,10 @@ disqus: True
 In part 1, we have used the basic concurrency primitives, processes, to build our naive weightlifting tracking server. And in this part 2, we are going to use OTP framework provided by Erlang to build a more reliable system with simpler codes. And we will also add a web server to our system to let other call our system through http request.
 
 ## Project Setup
-Repo is [here](https://github.com/SWTPAIN/strong-as-fuck). To see the source code:
+Repo is [here](https://github.com/bruteforcecat/strong-as-fuck). To see the source code:
 
 ```
-git clone git@github.com:SWTPAIN/strong-as-fuck.git
+git clone git@github.com:bruteforcecat/strong-as-fuck.git
 cd strong-as-fuck
 git checkout v0.0.2
 ```

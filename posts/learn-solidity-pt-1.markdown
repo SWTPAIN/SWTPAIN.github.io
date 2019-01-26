@@ -16,7 +16,7 @@ I am building a toy project for people to swapping items. The main purpose is to
 
 ### Project Setup
 ```bash
-git clone git@github.com:SWTPAIN/freeswap-dapps.git
+git clone git@github.com:bruteforcecat/freeswap-dapps.git
 git checkout v0.0.1
 npm i
 truffle compile; truffle migrate;truffle develop

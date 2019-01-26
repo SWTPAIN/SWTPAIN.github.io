@@ -1,4 +1,4 @@
-# [Personal Blog](swtpain.github.io)
+# [Personal Blog](bruteforcecat.com)
 
 # Develop
 ```

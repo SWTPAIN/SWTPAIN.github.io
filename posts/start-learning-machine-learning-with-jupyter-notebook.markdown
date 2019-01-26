@@ -35,7 +35,7 @@ jupyter notebook
 
 This will open up the default browser. And you can see an web application and then click the top right button to create a new `.ipynb` file. And you start writing markdown or python code.
 
-I had done some simple data exploration in Iris dataset. If you do not have much experience of data science in Python, feel free to clone my [repo](https://github.com/SWTPAIN/explore-iris).
+I had done some simple data exploration in Iris dataset. If you do not have much experience of data science in Python, feel free to clone my [repo](https://github.com/bruteforcecat/explore-iris).
 
 
 Finally, it's always a good practice to export our package dependencies so other can easily get up and running with your project.

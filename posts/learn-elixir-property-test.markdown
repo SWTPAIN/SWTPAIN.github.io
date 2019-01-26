@@ -32,7 +32,7 @@ end
 In property testing, the idea is that the test framework will help us randomly generating different argument and run our test . This is particularly common in language having good type system and immutable data structure.
 
 ### Using Excheck
-The repo is [here](https://github.com/SWTPAIN/learning_property_test) if you are interested in looking at the code.
+The repo is [here](https://github.com/bruteforcecat/learning_property_test) if you are interested in looking at the code.
 ```
 
 ```elixir

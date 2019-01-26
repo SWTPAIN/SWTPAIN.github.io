@@ -16,10 +16,10 @@ We'll be developing an application server for keep tracking on the workout peopl
 Long running process that respond to various messages. It keep internal state by recursion.
 
 ## Project Setup
-Repo is [here](https://github.com/SWTPAIN/strong-as-fuck). To see the source code:
+Repo is [here](https://github.com/bruteforcecat/strong-as-fuck). To see the source code:
 
 ```
-git clone git@github.com:SWTPAIN/strong-as-fuck.git
+git clone git@github.com:bruteforcecat/strong-as-fuck.git
 cd strong-as-fuck
 git checkout v0.0.1
 ```
