@@ -7,7 +7,7 @@
     <meta property="og:type" content="article">
     <meta property="og:title" content="Learn Elixir - Property Test">
     <meta property="og:image" content>
-    <meta property="og:url" content="https://swtpain.github.io/posts/learn-elixir-property-test.html">
+    <meta property="og:url" content="https://bruteforcecat.github.io/posts/learn-elixir-property-test.html">
     <meta property="og:description" content="Learn Elixir - Property Test">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="author" content="KaFai Choi">
@@ -62,7 +62,7 @@ describe <span class="st">&quot;reverse&quot;</span> <span class="kw">do</span>
 <span class="co"># We will probably stop here but do we cover enough relevant case?</span></code></pre></div>
 <p>In property testing, the idea is that the test framework will help us randomly generating different argument and run our test . This is particularly common in language having good type system and immutable data structure.</p>
 <h3 id="using-excheck">Using Excheck</h3>
-<p>The repo is <a href="https://github.com/SWTPAIN/learning_property_test">here</a> if you are interested in looking at the code. ```</p>
+<p>The repo is <a href="https://github.com/bruteforcecat/learning_property_test">here</a> if you are interested in looking at the code. ```</p>
 <div class="sourceCode"><pre class="sourceCode elixir"><code class="sourceCode elixir"><span class="co"># add quixir to dpes dependencies</span>
 <span class="kw">defp</span> deps <span class="kw">do</span>
   [
