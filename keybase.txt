@@ -1,0 +1,56 @@
+==================================================================
+https://keybase.io/bruteforcecat
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of http://bruteforcecat.com
+  * I am bruteforcecat (https://keybase.io/bruteforcecat) on keybase.
+  * I have a public key ASAC5RtBzNL8gdSslj8QZmTJSKvBzEsh1SwOkJMgU69_iQo
+
+To do so, I am signing this object:
+
+{
+  "body": {
+    "key": {
+      "eldest_kid": "012002e51b41ccd2fc81d4ac963f106664c948abc1cc4b21d52c0e90932053af7f890a",
+      "host": "keybase.io",
+      "kid": "012002e51b41ccd2fc81d4ac963f106664c948abc1cc4b21d52c0e90932053af7f890a",
+      "uid": "f037e373f104bb93d1109a1767665919",
+      "username": "bruteforcecat"
+    },
+    "merkle_root": {
+      "ctime": 1548484458,
+      "hash": "ce77a6e5ccb38df2e8f9cf9faa849082266187732f782621e7a27821305ddb81ed8b4ca14a244410794db9bb45c92b5863d239b266a005395b8e6bd18ab8394f",
+      "hash_meta": "92239d533533601166174eea9e9287f5e7718382c2a324355a247ba5d6d5dd9d",
+      "seqno": 4624252
+    },
+    "service": {
+      "entropy": "qm3oqhZ4/u3uo8BKeblhtTN/",
+      "hostname": "bruteforcecat.com",
+      "protocol": "http:"
+    },
+    "type": "web_service_binding",
+    "version": 2
+  },
+  "client": {
+    "name": "keybase.io go client",
+    "version": "2.13.2"
+  },
+  "ctime": 1548484599,
+  "expire_in": 504576000,
+  "prev": "22211000dfd22d82cc31957d1a3a08ac07136947c78016004cec5fb17f6a2142",
+  "seqno": 10,
+  "tag": "signature"
+}
+
+which yields the signature:
+
+hKRib2R5hqhkZXRhY2hlZMOpaGFzaF90eXBlCqNrZXnEIwEgAuUbQczS/IHUrJY/EGZkyUirwcxLIdUsDpCTIFOvf4kKp3BheWxvYWTESpcCCsQgIiEQAN/SLYLMMZV9GjoIrAcTaUfHgBYATOxfsX9qIULEIGoGuuA+N0nuJ+qkDJR181krb6ZbHrDYKqcPVNNM5EVCAgHCo3NpZ8RA+Nj2wYwcQ+2Go8rKZDhH0+YD+/z6dI/sD3Ha2GgIfPl5EqCRo6XzwycuEEoBIiMCVFlHKVZc5PXaTcNkVh/BDqhzaWdfdHlwZSCkaGFzaIKkdHlwZQildmFsdWXEIAGFdb6g0PTiyLN/kxqoqpXAFEDBYWn8fS+WHp0yQwh8o3RhZ80CAqd2ZXJzaW9uAQ==
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/bruteforcecat
+
+==================================================================
