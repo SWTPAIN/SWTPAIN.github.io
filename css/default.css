@@ -183,6 +183,10 @@ pre code {
   font-size: 32px;
 }
 
+.post-list__remark {
+  font-size: 22px;
+}
+
 .post-item {
   padding: 1em 0 1em;
   border-top: 1px dotted #888;
